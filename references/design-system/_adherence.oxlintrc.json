@@ -1,0 +1,260 @@
+{
+  "plugins": [
+    "react",
+    "import"
+  ],
+  "rules": {
+    "react/forbid-elements": [
+      "warn",
+      {
+        "forbid": []
+      }
+    ],
+    "no-restricted-imports": [
+      "warn",
+      {
+        "patterns": [
+          {
+            "group": [
+              "components/content/**",
+              "components/core/**"
+            ],
+            "message": "Import design-system components from 'index.js', not component internals."
+          }
+        ]
+      }
+    ],
+    "no-restricted-syntax": [
+      "warn",
+      {
+        "selector": "Literal[value=/#[0-9a-fA-F]{3,8}\\b/]",
+        "message": "Raw hex color — use a design-system color token via var()."
+      },
+      {
+        "selector": "Literal[value=/\\b\\d+px\\b/]",
+        "message": "Raw px value — use a design-system spacing token via var()."
+      },
+      {
+        "selector": "Literal[value=/font-family\\s*:\\s*(?!['\\\"]?(?:Unbounded|Space Grotesk|Domine))/i]",
+        "message": "Font not provided by the design system. Available: Unbounded, Space Grotesk, Domine."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|tone|key|ref|className|style|children)$/]",
+        "message": "<Badge> doesn't accept that prop. Declared props: children, tone."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Badge'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:bubblegum|coral|yellow|blue)$/]",
+        "message": "<Badge> tone must be one of 'bubblegum' | 'coral' | 'yellow' | 'blue'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|variant|size|icon|onClick|key|ref|className|style|children)$/]",
+        "message": "<Button> doesn't accept that prop. Declared props: children, variant, size, icon, onClick."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='variant'] > Literal[value!=/^(?:primary|secondary|ghost)$/]",
+        "message": "<Button> variant must be one of 'primary' | 'secondary' | 'ghost'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Button'] > JSXAttribute[name.name='size'] > Literal[value!=/^(?:sm|md|lg)$/]",
+        "message": "<Button> size must be one of 'sm' | 'md' | 'lg'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Card'] > JSXAttribute > JSXIdentifier[name!=/^(?:kicker|title|children|tone|key|ref|className|style|children)$/]",
+        "message": "<Card> doesn't accept that prop. Declared props: kicker, title, children, tone."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Card'] > JSXAttribute[name.name='tone'] > Literal[value!=/^(?:white|cream|pink)$/]",
+        "message": "<Card> tone must be one of 'white' | 'cream' | 'pink'."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Chip'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|selected|onClick|key|ref|className|style|children)$/]",
+        "message": "<Chip> doesn't accept that prop. Declared props: children, selected, onClick."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='Input'] > JSXAttribute > JSXIdentifier[name!=/^(?:label|placeholder|value|onChange|key|ref|className|style|children)$/]",
+        "message": "<Input> doesn't accept that prop. Declared props: label, placeholder, value, onChange."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SectionKicker'] > JSXAttribute > JSXIdentifier[name!=/^(?:children|align|key|ref|className|style|children)$/]",
+        "message": "<SectionKicker> doesn't accept that prop. Declared props: children, align."
+      },
+      {
+        "selector": "JSXOpeningElement[name.name='SectionKicker'] > JSXAttribute[name.name='align'] > Literal[value!=/^(?:left|center)$/]",
+        "message": "<SectionKicker> align must be one of 'left' | 'center'."
+      }
+    ]
+  },
+  "overrides": [
+    {
+      "files": [
+        "**/index.js"
+      ],
+      "rules": {
+        "no-restricted-imports": "off"
+      }
+    }
+  ],
+  "x-omelette": {
+    "components": {
+      "Badge": {
+        "replaces": []
+      },
+      "Button": {
+        "replaces": []
+      },
+      "Card": {
+        "replaces": []
+      },
+      "Chip": {
+        "replaces": []
+      },
+      "Input": {
+        "replaces": []
+      },
+      "SectionKicker": {
+        "replaces": []
+      }
+    },
+    "tokens": [
+      "--accent-blush",
+      "--accent-cool",
+      "--accent-pop",
+      "--accent-warm",
+      "--border-default",
+      "--border-soft",
+      "--border-w",
+      "--border-w-thick",
+      "--brand-primary",
+      "--brand-secondary",
+      "--bubblegum",
+      "--chrome-1",
+      "--chrome-2",
+      "--chrome-3",
+      "--coral",
+      "--dur-base",
+      "--dur-fast",
+      "--ease-pop",
+      "--ease-standard",
+      "--focus-ring",
+      "--font-body",
+      "--font-display",
+      "--font-serif",
+      "--ink",
+      "--ink-40",
+      "--ink-70",
+      "--kicker-tracking",
+      "--pool-blue",
+      "--radius-md",
+      "--radius-pill",
+      "--radius-sharp",
+      "--radius-sm",
+      "--shadow-hard",
+      "--shadow-hard-sm",
+      "--shadow-soft",
+      "--soft-pink",
+      "--space-1",
+      "--space-2",
+      "--space-3",
+      "--space-4",
+      "--space-5",
+      "--space-6",
+      "--space-7",
+      "--space-8",
+      "--space-9",
+      "--summer-orange",
+      "--sun-yellow",
+      "--surface-card",
+      "--surface-inverse",
+      "--surface-page",
+      "--text-body",
+      "--text-body-lg",
+      "--text-body-sm",
+      "--text-caption",
+      "--text-display-lg",
+      "--text-display-md",
+      "--text-display-sm",
+      "--text-display-xl",
+      "--text-editorial",
+      "--text-editorial-lg",
+      "--text-inverse",
+      "--text-kicker",
+      "--text-muted",
+      "--text-primary",
+      "--warm-cream",
+      "--white"
+    ],
+    "tokenKinds": {
+      "--font-display": "font",
+      "--font-body": "font",
+      "--font-serif": "font",
+      "--coral": "color",
+      "--summer-orange": "color",
+      "--soft-pink": "color",
+      "--warm-cream": "color",
+      "--pool-blue": "color",
+      "--bubblegum": "color",
+      "--sun-yellow": "color",
+      "--chrome-1": "color",
+      "--chrome-2": "color",
+      "--chrome-3": "color",
+      "--ink": "color",
+      "--ink-70": "color",
+      "--ink-40": "color",
+      "--white": "color",
+      "--surface-page": "color",
+      "--surface-card": "color",
+      "--surface-inverse": "color",
+      "--text-primary": "font",
+      "--text-inverse": "font",
+      "--text-muted": "font",
+      "--brand-primary": "color",
+      "--brand-secondary": "color",
+      "--accent-warm": "color",
+      "--accent-cool": "color",
+      "--accent-blush": "color",
+      "--accent-pop": "color",
+      "--border-default": "color",
+      "--border-soft": "color",
+      "--focus-ring": "color",
+      "--text-display-xl": "font",
+      "--text-display-lg": "font",
+      "--text-display-md": "font",
+      "--text-display-sm": "font",
+      "--text-kicker": "font",
+      "--kicker-tracking": "font",
+      "--text-editorial": "font",
+      "--text-editorial-lg": "font",
+      "--text-body-lg": "font",
+      "--text-body": "font",
+      "--text-body-sm": "font",
+      "--text-caption": "font",
+      "--space-1": "spacing",
+      "--space-2": "spacing",
+      "--space-3": "spacing",
+      "--space-4": "spacing",
+      "--space-5": "spacing",
+      "--space-6": "spacing",
+      "--space-7": "spacing",
+      "--space-8": "spacing",
+      "--space-9": "spacing",
+      "--radius-sharp": "radius",
+      "--radius-sm": "radius",
+      "--radius-md": "radius",
+      "--radius-pill": "radius",
+      "--border-w": "spacing",
+      "--border-w-thick": "spacing",
+      "--shadow-hard": "shadow",
+      "--shadow-hard-sm": "shadow",
+      "--shadow-soft": "shadow",
+      "--ease-pop": "other",
+      "--ease-standard": "other",
+      "--dur-fast": "other",
+      "--dur-base": "other"
+    },
+    "fontFamilies": [
+      "Domine",
+      "Space Grotesk",
+      "Unbounded"
+    ]
+  }
+}

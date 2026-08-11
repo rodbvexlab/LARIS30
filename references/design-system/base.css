@@ -1,0 +1,6 @@
+*{box-sizing:border-box}
+body{margin:0;font:var(--text-body);color:var(--text-primary);background:var(--surface-page)}
+a{color:var(--coral)}
+a:hover{color:var(--bubblegum)}
+h1,h2,h3{margin:0;font-family:var(--font-display)}
+p{margin:0}

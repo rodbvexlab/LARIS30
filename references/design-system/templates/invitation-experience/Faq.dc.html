@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./ds-base.js"></script></helmet>
+<div ref="{{ setRef }}" style="{{ wrap }};background:var(--white);padding:56px 24px">
+<x-import component-from-global-scope="LARI30DesignSystem_0ed06a.SectionKicker">FAQ</x-import>
+<div style="margin-top:16px;display:flex;flex-direction:column">
+<sc-for list="{{ items }}" as="it" hint-placeholder-count="6">
+<div style="border-bottom:2px solid var(--ink);padding:16px 0;cursor:pointer" onclick="{{ it.toggle }}">
+<div style="display:flex;justify-content:space-between;align-items:center;font:700 15px var(--font-body);color:var(--ink)"><span>{{ it.q }}</span><span>{{ it.mark }}</span></div>
+<sc-if value="{{ it.isOpen }}" hint-placeholder-val="{{ false }}"><div style="font:500 14px/1.5 var(--font-body);color:var(--text-muted);margin-top:10px">{{ it.a }}</div></sc-if>
+</div>
+</sc-for>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { on: false, open: null };
+  setRef = (el) => { if (!el || this._obs) return; this._obs = new IntersectionObserver((e) => { if (e[0].isIntersecting) { this.setState({ on: true }); this._obs.disconnect(); } }, { threshold: 0.15 }); this._obs.observe(el); };
+  componentWillUnmount(){ if (this._obs) this._obs.disconnect(); }
+  data = [
+    { q: 'Posso levar acompanhante?', a: 'Em breve — confirmação de acompanhantes será liberada com o restante dos detalhes.' },
+    { q: 'O que devo levar?', a: 'Traga sua bebida favorita (BYOB) e disposição para dançar.' },
+    { q: 'A piscina estará liberada?', a: 'Sim! Vai rolar piscina — traga roupa de banho.' },
+    { q: 'Terá estacionamento?', a: 'Em breve.' },
+    { q: 'Como funciona a bebida?', a: 'Welcome drink e estrutura básica inclusos; o resto é BYOB.' },
+    { q: 'Qual o horário?', a: 'Em breve.' }
+  ];
+  renderVals() {
+    return {
+      setRef: this.setRef,
+      wrap: this.state.on ? 'opacity:1;transform:translateY(0);transition:opacity .6s var(--ease-standard),transform .6s var(--ease-standard)' : 'opacity:0;transform:translateY(20px)',
+      items: this.data.map((d, i) => ({
+        q: d.q, a: d.a, isOpen: this.state.open === i, mark: this.state.open === i ? '–' : '+',
+        toggle: () => this.setState({ open: this.state.open === i ? null : i })
+      }))
+    };
+  }
+}
+
+</script>
+</body>
+</html>

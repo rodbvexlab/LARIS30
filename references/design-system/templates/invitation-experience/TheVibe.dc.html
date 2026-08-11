@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./ds-base.js"></script></helmet>
+<div ref="{{ setRef }}" style="background:var(--white);padding:64px 28px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center">
+<div style="{{ w0 }};font:800 40px/1.05 var(--font-display);color:var(--coral)">30 anos.</div>
+<div style="{{ w1 }};font:700 34px/1.05 var(--font-display);color:var(--sun-yellow);-webkit-text-stroke:1.5px var(--ink)">Sol.</div>
+<div style="{{ w2 }};font:700 34px/1.05 var(--font-display);color:var(--pool-blue)">Piscina.</div>
+<div style="{{ w3 }};font:700 34px/1.05 var(--font-display);color:var(--bubblegum)">Música.</div>
+<div style="{{ w4 }};font:800 40px/1.05 var(--font-display);color:var(--ink)">Cor.</div>
+<div style="{{ w5 }};font:700 34px/1.05 var(--font-display);color:var(--coral)">Amigos.</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { on: false };
+  setRef = (el) => {
+    if (!el || this._obs) return;
+    this._obs = new IntersectionObserver((entries) => {
+      if (entries[0].isIntersecting) { this.setState({ on: true }); this._obs.disconnect(); }
+    }, { threshold: 0.3 });
+    this._obs.observe(el);
+  };
+  componentWillUnmount(){ if (this._obs) this._obs.disconnect(); }
+  renderVals() {
+    const base = (delay) => this.state.on
+      ? `opacity:1;transform:translateY(0);transition:opacity .6s var(--ease-standard) ${delay}ms,transform .6s var(--ease-standard) ${delay}ms`
+      : `opacity:0;transform:translateY(18px)`;
+    return { setRef: this.setRef, w0: base(0), w1: base(80), w2: base(160), w3: base(240), w4: base(320), w5: base(400) };
+  }
+}
+
+</script>
+</body>
+</html>

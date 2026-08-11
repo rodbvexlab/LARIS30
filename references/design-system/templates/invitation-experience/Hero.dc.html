@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./ds-base.js"></script><script src="./image-slot.js"></script>
+<style>
+@keyframes h-in{from{opacity:0;transform:translateY(22px)}to{opacity:1;transform:translateY(0)}}
+</style></helmet>
+<div style="position:relative;min-height:844px;overflow:hidden;background:var(--warm-cream);display:flex;flex-direction:column;align-items:center;padding:36px 20px 40px;text-align:center">
+<div style="position:absolute;inset:0;background:repeating-conic-gradient(from 0deg,var(--coral) 0deg 12deg,var(--summer-orange) 12deg 24deg);transform:{{ sunburstTransform }};transition:transform 0.05s linear"></div>
+<div style="position:relative;z-index:2;font:700 12px var(--font-body);letter-spacing:0.3em;text-transform:uppercase;color:var(--ink);animation:h-in 0.6s var(--ease-pop) 150ms both">You're Invited</div>
+<div style="position:relative;z-index:2;margin-top:10px;transform:{{ titleTransform }};transition:transform 0.05s linear">
+<div style="font:900 88px/0.82 var(--font-display);color:var(--warm-cream);text-shadow:5px 5px 0 var(--ink);animation:h-in 0.6s var(--ease-pop) 250ms both">LARIS</div>
+<div style="font:900 110px/0.82 var(--font-display);color:var(--ink);animation:h-in 0.6s var(--ease-pop) 330ms both">30</div>
+</div>
+<div style="position:relative;z-index:2;font:600 15px var(--font-body);letter-spacing:0.25em;text-transform:uppercase;color:var(--sun-yellow);margin-top:14px;text-shadow:2px 2px 0 var(--ink);animation:h-in 0.6s var(--ease-pop) 450ms both">In Full Color</div>
+<div style="position:relative;z-index:2;font:700 13px var(--font-body);letter-spacing:0.2em;text-transform:uppercase;color:var(--ink);margin-top:6px;animation:h-in 0.6s var(--ease-pop) 450ms both">Pool Party</div>
+<div style="position:relative;z-index:2;width:82%;max-width:300px;height:360px;margin-top:8px;display:flex;align-items:flex-end;justify-content:center;transform:{{ photoTransform }};transition:transform 0.05s linear;animation:h-in 0.7s var(--ease-pop) 650ms both">
+<div style="position:absolute;bottom:8px;width:220px;height:220px;border-radius:50%;background:radial-gradient(circle,var(--bubblegum) 0%,transparent 70%);opacity:0.5"></div>
+<image-slot id="hero-photo" shape="rect" fit="contain" placeholder="Editorial cutout of Larissa — background removed, full figure" style="width:100%;height:100%"></image-slot>
+</div>
+<div style="position:relative;z-index:2;margin-top:14px;transform:{{ discoTransform }};transition:transform 0.05s linear">
+<div style="width:64px;height:64px" class="chrome-sphere"></div>
+</div>
+<div style="position:relative;z-index:2;margin-top:18px;background:var(--ink);color:var(--warm-cream);padding:13px 24px;border-radius:var(--radius-pill);font:700 16px var(--font-display);animation:h-in 0.6s var(--ease-pop) 800ms both">22 · AGO · 2026</div>
+<div style="position:relative;z-index:2;margin-top:20px;animation:h-in 0.6s var(--ease-pop) 950ms both">
+<x-import component-from-global-scope="LARI30DesignSystem_0ed06a.Button" variant="primary" size="lg" hint-size="180,56">EU VOU ✦</x-import>
+</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { p: 0 };
+  componentDidMount(){
+    this._ticking = false;
+    this._onScroll = () => {
+      if (this._ticking) return;
+      this._ticking = true;
+      requestAnimationFrame(() => {
+        const p = Math.max(0, Math.min(1, window.scrollY / 600));
+        this.setState({ p });
+        this._ticking = false;
+      });
+    };
+    window.addEventListener('scroll', this._onScroll, { passive: true });
+  }
+  componentWillUnmount(){ window.removeEventListener('scroll', this._onScroll); }
+  renderVals() {
+    const p = this.state.p;
+    return {
+      sunburstTransform: `rotate(${p * 14}deg) scale(${1 + p * 0.08})`,
+      titleTransform: `translateY(${p * -26}px) scale(${1 - p * 0.06})`,
+      photoTransform: `translateY(${p * -10}px) scale(${1 + p * 0.03})`,
+      discoTransform: `translateY(${p * -34}px)`
+    };
+  }
+}
+
+</script>
+</body>
+</html>

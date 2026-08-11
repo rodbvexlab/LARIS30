@@ -1,0 +1,36 @@
+:root{
+  /* base palette */
+  --coral: #F15A32;
+  --summer-orange: #F6A05B;
+  --soft-pink: #E99A9F;
+  --warm-cream: #F7E7D4;
+  /* accents */
+  --pool-blue: #82AEBB;
+  --bubblegum: #FF4FB3;
+  --sun-yellow: #FFE84D;
+  --chrome-1: #E8EAEC;
+  --chrome-2: #B7BCC2;
+  --chrome-3: #8A9096;
+  /* contrast */
+  --ink: #18171D;
+  --ink-70: #18171DB3;
+  --ink-40: #18171D66;
+  --white: #FFFDF9;
+
+  /* semantic aliases */
+  --surface-page: var(--warm-cream);
+  --surface-card: var(--white);
+  --surface-inverse: var(--ink);
+  --text-primary: var(--ink);
+  --text-inverse: var(--warm-cream);
+  --text-muted: var(--ink-70);
+  --brand-primary: var(--coral);
+  --brand-secondary: var(--bubblegum);
+  --accent-warm: var(--summer-orange);
+  --accent-cool: var(--pool-blue);
+  --accent-blush: var(--soft-pink);
+  --accent-pop: var(--sun-yellow);
+  --border-default: var(--ink);
+  --border-soft: var(--ink-40);
+  --focus-ring: var(--bubblegum);
+}

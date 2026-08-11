@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./ds-base.js"></script></helmet>
+<div ref="{{ setRef }}" style="{{ wrap }};background:var(--ink);padding:64px 24px;text-align:center">
+<div style="font:900 60px/0.95 var(--font-display);color:var(--sun-yellow)">BYOB</div>
+<div style="font:600 16px/1.5 var(--font-body);color:var(--warm-cream);margin-top:18px;max-width:300px;margin-left:auto;margin-right:auto">Traga sua bebida alcoólica favorita.</div>
+<div style="font:500 14px/1.5 var(--font-body);color:var(--chrome-1);margin-top:10px;max-width:300px;margin-left:auto;margin-right:auto">Teremos welcome drink e estrutura básica de bebidas disponível.</div>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { on: false };
+  setRef = (el) => { if (!el || this._obs) return; this._obs = new IntersectionObserver((e) => { if (e[0].isIntersecting) { this.setState({ on: true }); this._obs.disconnect(); } }, { threshold: 0.2 }); this._obs.observe(el); };
+  componentWillUnmount(){ if (this._obs) this._obs.disconnect(); }
+  renderVals() { return { setRef: this.setRef, wrap: this.state.on ? 'opacity:1;transform:translateY(0);transition:opacity .6s var(--ease-standard),transform .6s var(--ease-standard)' : 'opacity:0;transform:translateY(20px)' }; }
+}
+
+</script>
+</body>
+</html>

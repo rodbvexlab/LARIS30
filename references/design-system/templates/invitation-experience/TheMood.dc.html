@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./ds-base.js"></script><script src="./image-slot.js"></script>
+<style>
+@keyframes marquee-l{from{transform:translateX(0)}to{transform:translateX(-33.33%)}}
+@keyframes marquee-r{from{transform:translateX(-33.33%)}to{transform:translateX(0)}}
+</style></helmet>
+<div style="background:var(--ink);padding:56px 0;overflow:hidden">
+<div style="padding:0 24px;text-align:center;margin-bottom:24px">
+<x-import component-from-global-scope="LARI30DesignSystem_0ed06a.SectionKicker" align="center">The Mood</x-import>
+</div>
+<div style="display:flex;gap:10px;width:300%;animation:marquee-l 26s linear infinite">
+<div style="flex:0 0 160px;aspect-ratio:4/5;overflow:hidden;border-radius:var(--radius-sharp)"><image-slot id="mood-a1" shape="rect" placeholder="Pool"></image-slot></div>
+<div style="flex:0 0 220px;aspect-ratio:3/2;overflow:hidden;border-radius:var(--radius-sharp)"><image-slot id="mood-a2" shape="rect" placeholder="Disco"></image-slot></div>
+<div style="flex:0 0 160px;aspect-ratio:4/5;overflow:hidden;border-radius:var(--radius-sharp)"><image-slot id="mood-a3" shape="rect" placeholder="Friends"></image-slot></div>
+<div style="flex:0 0 220px;aspect-ratio:3/2;overflow:hidden;border-radius:var(--radius-sharp)"><image-slot id="mood-a4" shape="rect" placeholder="Sunset"></image-slot></div>
+<div style="flex:0 0 160px;aspect-ratio:4/5;overflow:hidden;border-radius:var(--radius-sharp)"><image-slot id="mood-a5" shape="rect" placeholder="Pool"></image-slot></div>
+<div style="flex:0 0 220px;aspect-ratio:3/2;overflow:hidden;border-radius:var(--radius-sharp)"><image-slot id="mood-a6" shape="rect" placeholder="Disco"></image-slot></div>
+</div>
+<div style="display:flex;gap:10px;width:300%;margin-top:12px;animation:marquee-r 26s linear infinite">
+<div style="flex:0 0 220px;aspect-ratio:3/2;overflow:hidden;border-radius:var(--radius-sharp)"><image-slot id="mood-b1" shape="rect" placeholder="Outfit"></image-slot></div>
+<div style="flex:0 0 160px;aspect-ratio:4/5;overflow:hidden;border-radius:var(--radius-sharp)"><image-slot id="mood-b2" shape="rect" placeholder="Cocktail"></image-slot></div>
+<div style="flex:0 0 220px;aspect-ratio:3/2;overflow:hidden;border-radius:var(--radius-sharp)"><image-slot id="mood-b3" shape="rect" placeholder="Music"></image-slot></div>
+<div style="flex:0 0 160px;aspect-ratio:4/5;overflow:hidden;border-radius:var(--radius-sharp)"><image-slot id="mood-b4" shape="rect" placeholder="Glow"></image-slot></div>
+<div style="flex:0 0 220px;aspect-ratio:3/2;overflow:hidden;border-radius:var(--radius-sharp)"><image-slot id="mood-b5" shape="rect" placeholder="Outfit"></image-slot></div>
+<div style="flex:0 0 160px;aspect-ratio:4/5;overflow:hidden;border-radius:var(--radius-sharp)"><image-slot id="mood-b6" shape="rect" placeholder="Cocktail"></image-slot></div>
+</div>
+<div style="display:flex;justify-content:center;margin-top:28px">
+<div style="width:44px;height:44px" class="chrome-sphere"></div>
+</div>
+</div>
+
+</x-dc>
+</body>
+</html>

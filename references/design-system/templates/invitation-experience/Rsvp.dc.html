@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet><script src="./ds-base.js"></script>
+<style>@keyframes spark-pop{0%{opacity:0;transform:translate(0,0) scale(0)}30%{opacity:1}100%{opacity:0;transform:var(--end) scale(1)}}</style></helmet>
+<div ref="{{ setRef }}" style="{{ wrap }};background:var(--warm-cream);padding:56px 24px;position:relative;overflow:hidden">
+<x-import component-from-global-scope="LARI30DesignSystem_0ed06a.SectionKicker">RSVP</x-import>
+<div style="font:800 32px/1.05 var(--font-display);color:var(--ink);margin:14px 0 24px">See You Poolside?</div>
+<sc-if value="{{ notSubmitted }}" hint-placeholder-val="{{ true }}">
+<div style="display:flex;flex-direction:column;gap:14px">
+<x-import component-from-global-scope="LARI30DesignSystem_0ed06a.Input" label="Nome completo" placeholder="Seu nome" hint-size="100%,68px"></x-import>
+<x-import component-from-global-scope="LARI30DesignSystem_0ed06a.Input" label="WhatsApp" placeholder="(11) 90000-0000" hint-size="100%,68px"></x-import>
+<x-import component-from-global-scope="LARI30DesignSystem_0ed06a.Input" label="Restrição alimentar" placeholder="Se houver" hint-size="100%,68px"></x-import>
+<div style="margin-top:8px">
+<x-import component-from-global-scope="LARI30DesignSystem_0ed06a.Button" variant="primary" size="lg" on-click="{{ submit }}" hint-size="100%,56">Confirmar Que Eu Vou</x-import>
+</div>
+</div>
+</sc-if>
+<sc-if value="{{ submitted }}" hint-placeholder-val="{{ false }}">
+<div style="text-align:center;padding:24px 0;position:relative">
+<div style="font:900 34px var(--font-display);color:var(--coral)">YOU'RE IN ✦</div>
+<div style="font:500 14px var(--font-body);color:var(--text-muted);margin-top:8px">Te vemos na piscina 💦</div>
+<div style="position:absolute;left:50%;top:0;width:6px;height:6px;background:var(--sun-yellow);border-radius:50%;--end:translate(-70px,-40px);animation:spark-pop 0.9s var(--ease-pop) forwards"></div>
+<div style="position:absolute;left:50%;top:0;width:6px;height:6px;background:var(--bubblegum);border-radius:50%;--end:translate(60px,-60px);animation:spark-pop 0.9s var(--ease-pop) 0.05s forwards"></div>
+<div style="position:absolute;left:50%;top:0;width:6px;height:6px;background:var(--pool-blue);border-radius:50%;--end:translate(-40px,60px);animation:spark-pop 0.9s var(--ease-pop) 0.1s forwards"></div>
+<div style="position:absolute;left:50%;top:0;width:6px;height:6px;background:var(--coral);border-radius:50%;--end:translate(80px,30px);animation:spark-pop 0.9s var(--ease-pop) 0.15s forwards"></div>
+</div>
+</sc-if>
+</div>
+
+</x-dc>
+<script type="text/x-dc" data-dc-script>
+class Component extends DCLogic {
+  state = { on: false, submitted: false };
+  setRef = (el) => { if (!el || this._obs) return; this._obs = new IntersectionObserver((e) => { if (e[0].isIntersecting) { this.setState({ on: true }); this._obs.disconnect(); } }, { threshold: 0.2 }); this._obs.observe(el); };
+  componentWillUnmount(){ if (this._obs) this._obs.disconnect(); }
+  renderVals() {
+    return {
+      setRef: this.setRef,
+      wrap: this.state.on ? 'opacity:1;transform:translateY(0);transition:opacity .6s var(--ease-standard),transform .6s var(--ease-standard)' : 'opacity:0;transform:translateY(20px)',
+      notSubmitted: !this.state.submitted,
+      submitted: this.state.submitted,
+      submit: () => this.setState({ submitted: true })
+    };
+  }
+}
+
+</script>
+</body>
+</html>

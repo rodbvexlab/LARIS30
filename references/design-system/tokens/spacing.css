@@ -1,0 +1,24 @@
+:root{
+  --space-1: 4px;
+  --space-2: 8px;
+  --space-3: 12px;
+  --space-4: 16px;
+  --space-5: 24px;
+  --space-6: 32px;
+  --space-7: 48px;
+  --space-8: 64px;
+  --space-9: 96px;
+  --radius-sharp: 2px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-pill: 999px;
+  --border-w: 2px;
+  --border-w-thick: 3px;
+  --shadow-hard: 6px 6px 0 var(--ink);
+  --shadow-hard-sm: 3px 3px 0 var(--ink);
+  --shadow-soft: 0 12px 28px rgba(24,23,29,0.14);
+  --ease-pop: cubic-bezier(.34,1.56,.64,1); /* @kind other */
+  --ease-standard: cubic-bezier(.4,0,.2,1); /* @kind other */
+  --dur-fast: 140ms; /* @kind other */
+  --dur-base: 240ms; /* @kind other */
+}

@@ -1,0 +1,7 @@
+.bg-sunburst{background:repeating-conic-gradient(from 0deg,var(--coral) 0deg 12deg,var(--summer-orange) 12deg 24deg)}
+.bg-sunburst-blush{background:repeating-conic-gradient(from 0deg,var(--accent-blush) 0deg 12deg,var(--warm-cream) 12deg 24deg)}
+.bg-sunburst-cool{background:repeating-conic-gradient(from 0deg,var(--pool-blue) 0deg 12deg,var(--warm-cream) 12deg 24deg)}
+.chrome-sphere{border-radius:50%;background:radial-gradient(circle at 32% 28%,#fff 0%,var(--chrome-1) 18%,var(--chrome-2) 45%,var(--chrome-3) 68%,#5b6066 100%);box-shadow:inset -6px -8px 14px rgba(0,0,0,.35),inset 6px 8px 10px rgba(255,255,255,.6)}
+.sticker{transform:rotate(-4deg);filter:drop-shadow(4px 5px 0 var(--ink))}
+.hard-card{background:var(--surface-card);border:var(--border-w) solid var(--border-default);box-shadow:var(--shadow-hard);border-radius:var(--radius-sharp)}
+.pill{border-radius:var(--radius-pill)}
