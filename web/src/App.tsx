@@ -2,6 +2,10 @@ import { Hero } from './sections/Hero';
 import { Vibe } from './sections/Vibe';
 import { PartyInfo } from './sections/PartyInfo';
 import { DressCode } from './sections/DressCode';
+import { Mood } from './sections/Mood';
+import { Contribution } from './sections/Contribution';
+import { Included } from './sections/Included';
+import { Byob } from './sections/Byob';
 
 /**
  * The experience container mirrors InvitationExperience.dc.html: a single
@@ -16,6 +20,10 @@ export default function App() {
       <Vibe />
       <PartyInfo />
       <DressCode />
+      <Mood />
+      <Contribution />
+      <Included />
+      <Byob />
     </div>
   );
 }
