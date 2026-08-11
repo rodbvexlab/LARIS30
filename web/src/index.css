@@ -91,3 +91,20 @@
     color: var(--bubblegum);
   }
 }
+
+/* ---------------------------------------------------------------------------
+ * Shared keyboard-focus treatment for the UI primitives.
+ *
+ * The design system only ever defines one focus affordance — the Input's 3px
+ * Bubblegum ring (--focus-ring). Button, Chip and the rest ship with no focus
+ * style at all in the export, which is an accessibility gap rather than a
+ * design decision, so the Input's own ring is reused across every interactive
+ * primitive. `:focus-visible` keeps it off during pointer interaction, which
+ * matches how the design system's specimens read.
+ * ------------------------------------------------------------------------- */
+@layer components {
+  .focus-ring:focus-visible {
+    outline: 3px solid var(--focus-ring);
+    outline-offset: 2px;
+  }
+}

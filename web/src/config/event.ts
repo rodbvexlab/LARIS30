@@ -19,6 +19,8 @@ export interface Celebrant {
   name: string;
   /** Official project wordmark. Never "LARI 30" or "LARISSA 30". */
   wordmark: string;
+  /** Project signature line, always paired with the wordmark. */
+  signature: string;
   age: number;
 }
 
@@ -74,6 +76,8 @@ export interface Policies {
 
 export interface EventConfig {
   celebrant: Celebrant;
+  /** Party theme. Confirmed. */
+  theme: string;
   /** ISO date. Confirmed. */
   date: string;
   time: EventTime;
@@ -89,8 +93,11 @@ export const event: EventConfig = {
   celebrant: {
     name: 'Larissa',
     wordmark: 'LARIS 30',
+    signature: 'IN FULL COLOR',
     age: 30,
   },
+
+  theme: 'POOL PARTY',
 
   date: '2026-08-22',
 

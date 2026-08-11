@@ -1,111 +1,134 @@
-import { version as reactVersion } from 'react';
+import { useState } from 'react';
 import type { ReactNode } from 'react';
-import { motion } from 'motion/react';
 
-import { event } from './config/event';
+import { Badge, Button, Card, Chip, Input, SectionKicker } from './components/ui';
 
 /**
- * CP0 — technical foundation check.
+ * CP1 — component specimen.
  *
- * This is scaffolding, not design. It exists to prove React, the ported design
- * tokens, the three brand fonts, the CSS motifs, Tailwind and the build all
- * work before any of the 13 sections get implemented. It is replaced, not
- * extended, at the next checkpoint.
+ * A side-by-side reference for checking the ported primitives against
+ * reference/design-system/components/**\/*.card.html. This is scaffolding, not
+ * part of the invitation: it gets replaced when the sections land.
  */
 
-const SWATCHES = [
-  { label: 'Coral', token: '--coral' },
-  { label: 'Summer Orange', token: '--summer-orange' },
-  { label: 'Soft Pink', token: '--soft-pink' },
-  { label: 'Warm Cream', token: '--warm-cream' },
-  { label: 'Pool Blue', token: '--pool-blue' },
-  { label: 'Bubblegum', token: '--bubblegum' },
-  { label: 'Sun Yellow', token: '--sun-yellow' },
-  { label: 'Deep Ink', token: '--ink' },
-] as const;
-
-/** Counts unconfirmed fields — every `null` in the event config. */
-function countPending(value: unknown): number {
-  if (value === null) return 1;
-  if (typeof value === 'object') {
-    return Object.values(value as Record<string, unknown>).reduce<number>(
-      (total, child) => total + countPending(child),
-      0,
-    );
-  }
-  return 0;
-}
-
-function Row({ label, children }: { label: string; children: ReactNode }) {
+function Group({ label, children }: { label: string; children: ReactNode }) {
   return (
-    <div className="flex items-baseline justify-between gap-4 border-b-2 border-ink py-3">
-      <span
-        className="uppercase"
-        style={{ font: 'var(--text-caption)', letterSpacing: 'var(--kicker-tracking)' }}
-      >
-        {label}
-      </span>
-      <span style={{ font: 'var(--text-body-sm)' }}>{children}</span>
-    </div>
+    <section style={{ display: 'flex', flexDirection: 'column', gap: 'var(--space-4)' }}>
+      <SectionKicker>{label}</SectionKicker>
+      {children}
+    </section>
   );
 }
 
 export default function App() {
-  const pending = countPending(event);
+  const [rsvp, setRsvp] = useState<'yes' | 'no' | null>(null);
+  const [name, setName] = useState('');
 
   return (
-    <main className="mx-auto max-w-[430px] px-6 py-10">
-      <motion.div
-        initial={{ opacity: 0, y: 8 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.4, ease: 'easeOut' }}
-        className="inline-block bg-ink px-4 py-2 pill"
-        style={{ font: 'var(--text-caption)', color: 'var(--text-inverse)' }}
-      >
-        CP0 · FOUNDATION OK
-      </motion.div>
-
-      <h1 className="font-display mt-6 text-5xl font-black">{event.celebrant.wordmark}</h1>
-
-      <div className="bg-sunburst my-6 h-3" />
-
-      <section className="hard-card p-6">
-        <p style={{ font: 'var(--text-display-sm)' }}>Display · Unbounded</p>
-        <p className="mt-2" style={{ font: 'var(--text-body)' }}>
-          Body · Space Grotesk
-        </p>
-        <p className="mt-2" style={{ font: 'var(--text-editorial)' }}>
-          Editorial · Domine
-        </p>
-      </section>
-
-      <div className="mt-6 grid grid-cols-4 gap-2">
-        {SWATCHES.map((swatch) => (
-          <div
-            key={swatch.token}
-            title={swatch.label}
-            className="border-ink aspect-square border-2"
-            style={{ background: `var(${swatch.token})` }}
-          />
-        ))}
-      </div>
-
-      <div className="mt-6 flex items-center gap-4">
-        <div className="chrome-sphere h-16 w-16" />
-        <div
-          className="bg-sun-yellow border-ink sticker border-2 px-4 py-2"
-          style={{ font: 'var(--text-caption)' }}
-        >
-          STICKER
+    <main
+      style={{
+        maxWidth: '430px',
+        margin: '0 auto',
+        padding: 'var(--space-6) var(--space-5) var(--space-9)',
+        display: 'flex',
+        flexDirection: 'column',
+        gap: 'var(--space-8)',
+      }}
+    >
+      <Group label="Button">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+          <Button variant="primary" size="lg">
+            RSVP Now
+          </Button>
+          <Button variant="secondary">Add to Calendar</Button>
+          <Button variant="ghost">See Details</Button>
+          <Button variant="primary" size="sm">
+            Share
+          </Button>
         </div>
-      </div>
 
-      <section className="mt-8">
-        <Row label="React">{reactVersion}</Row>
-        <Row label="Data">{event.date}</Row>
-        <Row label="Rateio">R$ {event.contribution},00</Row>
-        <Row label="Campos pendentes">{pending}</Row>
-      </section>
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+          <Button variant="primary" disabled>
+            Disabled
+          </Button>
+          <Button variant="ghost" disabled>
+            Disabled Ghost
+          </Button>
+        </div>
+      </Group>
+
+      <Group label="Chip">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-3)' }}>
+          <Chip selected={rsvp === 'yes'} onClick={() => setRsvp('yes')}>
+            Yes, I&apos;ll be there
+          </Chip>
+          <Chip selected={rsvp === 'no'} onClick={() => setRsvp('no')}>
+            Can&apos;t make it
+          </Chip>
+          <Chip disabled>Disabled</Chip>
+        </div>
+      </Group>
+
+      <Group label="Badge">
+        <div style={{ display: 'flex', flexWrap: 'wrap', gap: 'var(--space-5)' }}>
+          <Badge tone="bubblegum">
+            TURNS
+            <br />
+            30
+          </Badge>
+          <Badge tone="yellow">
+            POOL
+            <br />
+            PARTY
+          </Badge>
+          <Badge tone="coral">
+            IN FULL
+            <br />
+            COLOR
+          </Badge>
+          <Badge tone="blue">
+            SAVE THE
+            <br />
+            DATE
+          </Badge>
+        </div>
+      </Group>
+
+      <Group label="Input">
+        <Input
+          label="Nome completo"
+          name="name"
+          placeholder="Seu nome"
+          autoComplete="name"
+          value={name}
+          onChange={(e) => setName(e.target.value)}
+        />
+        <Input
+          label="WhatsApp"
+          name="whatsapp"
+          type="tel"
+          placeholder="(11) 90000-0000"
+          autoComplete="tel"
+          required
+          error="Campo obrigatório."
+        />
+      </Group>
+
+      <Group label="Card">
+        <Card kicker="When" title="22 Ago 2026" tone="white">
+          Horário em breve.
+        </Card>
+        <Card kicker="Where" title="Chácara" tone="pink">
+          Endereço em breve.
+        </Card>
+        <Card kicker="Dress Code" title="Come Colorido." tone="cream">
+          Summer &amp; colorful vibes.
+        </Card>
+      </Group>
+
+      <Group label="Section Kicker">
+        <SectionKicker align="center">Centered</SectionKicker>
+      </Group>
     </main>
   );
 }

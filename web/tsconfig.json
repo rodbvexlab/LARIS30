@@ -15,6 +15,9 @@
 
     "isolatedModules": true,
     "verbatimModuleSyntax": true,
+    // Lets vite.config.ts import ./src/config/event.ts with its extension,
+    // which Vite's native config loader requires.
+    "allowImportingTsExtensions": true,
     "resolveJsonModule": true,
     "skipLibCheck": true,
     "noEmit": true
