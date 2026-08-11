@@ -1,0 +1,27 @@
+<!doctype html>
+<html lang="pt-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+
+    <!--
+      Fonts mirror reference/design-system/tokens/fonts.css exactly (same three
+      families, same weights). Delivered as <link> with preconnect instead of a
+      CSS @import so the request starts during HTML parse rather than after the
+      stylesheet loads — same fonts, earlier. Weight trimming is a later
+      performance pass, not a design change.
+    -->
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Unbounded:wght@400;500;600;700;800;900&family=Space+Grotesk:wght@400;500;600;700&family=Domine:wght@400;600;700&display=swap"
+    />
+
+    <title>LARIS 30 — In Full Color</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

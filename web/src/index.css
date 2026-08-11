@@ -1,0 +1,93 @@
+@import 'tailwindcss';
+@import './styles/tokens.css';
+@import './styles/motifs.css';
+
+/* ---------------------------------------------------------------------------
+ * Tailwind theme bridge
+ *
+ * Four DS token groups already carry names that match Tailwind v4's own token
+ * namespaces (--font-*, --radius-*, --shadow-*, --ease-*). Declaring them here
+ * — and only here — means one literal value serves both the design system
+ * (`var(--shadow-hard)`, as the ported DS components write it) and Tailwind
+ * (`shadow-hard`). Values are verbatim from
+ * reference/design-system/tokens/{fonts,spacing}.css.
+ *
+ * Colors keep their DS names in styles/tokens.css and are aliased into
+ * Tailwind's --color-* namespace below, since the two names differ.
+ *
+ * `static` is required, not stylistic: by default Tailwind only emits theme
+ * variables it sees used by a utility class. Design-system components write
+ * `var(--ease-pop)` / `var(--shadow-hard-sm)` in inline styles, which the
+ * class scanner cannot see — without `static` those variables would be
+ * tree-shaken out and resolve to nothing at runtime.
+ * ------------------------------------------------------------------------- */
+@theme static {
+  /* -- fonts.css ---------------------------------------------------------- */
+  --font-display: 'Unbounded', sans-serif;
+  --font-body: 'Space Grotesk', sans-serif;
+  --font-serif: 'Domine', serif;
+
+  /* -- spacing.css : radius ----------------------------------------------
+   * Deliberately replaces Tailwind's default radius scale: this identity uses
+   * sharp (2px) on cards/photos and pill on buttons/chips/badges, with
+   * "nothing in between" (reference/design-system/readme.md). */
+  --radius-sharp: 2px;
+  --radius-sm: 8px;
+  --radius-md: 16px;
+  --radius-pill: 999px;
+
+  /* -- spacing.css : shadows ---------------------------------------------
+   * One system: flat, hard-edged, no blur. No soft drop shadows anywhere
+   * except --shadow-soft, which the DS defines but the invitation never uses. */
+  --shadow-hard: 6px 6px 0 var(--ink);
+  --shadow-hard-sm: 3px 3px 0 var(--ink);
+  --shadow-soft: 0 12px 28px rgba(24, 23, 29, 0.14);
+
+  /* -- spacing.css : easing ----------------------------------------------- */
+  --ease-pop: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --ease-standard: cubic-bezier(0.4, 0, 0.2, 1);
+
+  /* -- colors.css : aliases into Tailwind's color namespace ---------------
+   * `--color-white` is intentionally overridden: this palette has no pure
+   * #fff — the DS white is the warm off-white #FFFDF9. */
+  --color-coral: var(--coral);
+  --color-summer-orange: var(--summer-orange);
+  --color-soft-pink: var(--soft-pink);
+  --color-warm-cream: var(--warm-cream);
+  --color-pool-blue: var(--pool-blue);
+  --color-bubblegum: var(--bubblegum);
+  --color-sun-yellow: var(--sun-yellow);
+  --color-chrome-1: var(--chrome-1);
+  --color-chrome-2: var(--chrome-2);
+  --color-chrome-3: var(--chrome-3);
+  --color-ink: var(--ink);
+  --color-ink-70: var(--ink-70);
+  --color-ink-40: var(--ink-40);
+  --color-white: var(--white);
+}
+
+/* ---------------------------------------------------------------------------
+ * Base — ported from reference/design-system/base.css
+ * (box-sizing and default margins already come from Tailwind's preflight)
+ * ------------------------------------------------------------------------- */
+@layer base {
+  body {
+    font: var(--text-body);
+    color: var(--text-primary);
+    background: var(--surface-page);
+  }
+
+  h1,
+  h2,
+  h3 {
+    font-family: var(--font-display);
+  }
+
+  a {
+    color: var(--coral);
+  }
+
+  a:hover {
+    color: var(--bubblegum);
+  }
+}
