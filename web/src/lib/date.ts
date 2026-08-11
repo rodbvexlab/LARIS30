@@ -8,20 +8,24 @@
  * event day is a calendar day, not an instant.
  */
 
-/** Uppercase pt-BR month abbreviations, matching the approved "22 · AGO · 2026". */
+/**
+ * pt-BR month abbreviations. Stored in title case because the two approved
+ * formats disagree on casing — the Hero pill shouts "AGO", Party Info sets
+ * "Ago" — and upper-casing is the only direction that is lossless.
+ */
 const MONTHS_PT_BR = [
-  'JAN',
-  'FEV',
-  'MAR',
-  'ABR',
-  'MAI',
-  'JUN',
-  'JUL',
-  'AGO',
-  'SET',
-  'OUT',
-  'NOV',
-  'DEZ',
+  'Jan',
+  'Fev',
+  'Mar',
+  'Abr',
+  'Mai',
+  'Jun',
+  'Jul',
+  'Ago',
+  'Set',
+  'Out',
+  'Nov',
+  'Dez',
 ] as const;
 
 export interface IsoDayParts {
@@ -52,5 +56,16 @@ export function formatEventDate(iso: string): string {
   const parts = parseIsoDay(iso);
   if (!parts) return iso;
 
-  return `${parts.day} · ${MONTHS_PT_BR[parts.month - 1]} · ${parts.year}`;
+  return `${parts.day} · ${MONTHS_PT_BR[parts.month - 1]?.toUpperCase()} · ${parts.year}`;
+}
+
+/**
+ * "2026-08-22" -> "22 Ago 2026", the Party Info row format.
+ * Same fallback behaviour as formatEventDate.
+ */
+export function formatEventDatePlain(iso: string): string {
+  const parts = parseIsoDay(iso);
+  if (!parts) return iso;
+
+  return `${parts.day} ${MONTHS_PT_BR[parts.month - 1]} ${parts.year}`;
 }

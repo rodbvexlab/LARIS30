@@ -33,6 +33,12 @@ export interface EventTime {
 
 /** CONTENT_PENDING §3. Until confirmed: "CHÁCARA / ENDEREÇO EM BREVE". */
 export interface Venue {
+  /**
+   * The kind of venue, which IS confirmed ("Formato do local: chácara" —
+   * CONTENT_PENDING §1). Distinct from `name`: the venue's actual name has not
+   * been confirmed and must never be inferred from this.
+   */
+  type: string;
   name: string | null;
   address: string | null;
   city: string | null;
@@ -109,6 +115,7 @@ export const event: EventConfig = {
   contribution: 85,
 
   venue: {
+    type: 'Chácara',
     name: null,
     address: null,
     city: null,
