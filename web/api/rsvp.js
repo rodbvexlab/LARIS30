@@ -1,5 +1,7 @@
 const MAX_NAME = 120;
 const MAX_FOOD_RESTRICTION = 240;
+const UPSTREAM_ATTEMPTS = 3;
+const RETRY_DELAY_MS = 700;
 
 function sendJson(response, status, payload) {
   response.setHeader('Cache-Control', 'no-store');
@@ -23,6 +25,62 @@ function safeText(value, maxLength) {
   return /^[=+\-@]/.test(text) ? `'${text}` : text;
 }
 
+function wait(ms) {
+  return new Promise((resolve) => setTimeout(resolve, ms));
+}
+
+async function sendToAppsScript(scriptUrl, payload) {
+  let lastFailure = null;
+
+  for (let attempt = 1; attempt <= UPSTREAM_ATTEMPTS; attempt += 1) {
+    try {
+      const upstream = await fetch(scriptUrl, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(payload),
+        redirect: 'follow',
+      });
+
+      const text = await upstream.text();
+      let result = null;
+
+      try {
+        result = JSON.parse(text);
+      } catch {
+        result = null;
+      }
+
+      if (upstream.ok && result?.ok === true) {
+        return { ok: true };
+      }
+
+      lastFailure = {
+        attempt,
+        status: upstream.status,
+        appsScriptError: result?.error ?? 'invalid_response',
+        contentType: upstream.headers.get('content-type') ?? 'unknown',
+      };
+
+      console.warn('RSVP upstream attempt failed', lastFailure);
+    } catch (error) {
+      lastFailure = {
+        attempt,
+        status: null,
+        appsScriptError: 'network_error',
+        message: error instanceof Error ? error.message : 'unknown_error',
+      };
+
+      console.warn('RSVP upstream request failed', lastFailure);
+    }
+
+    if (attempt < UPSTREAM_ATTEMPTS) {
+      await wait(RETRY_DELAY_MS * attempt);
+    }
+  }
+
+  return { ok: false, failure: lastFailure };
+}
+
 export default async function handler(request, response) {
   if (request.method !== 'POST') {
     response.setHeader('Allow', 'POST');
@@ -33,6 +91,7 @@ export default async function handler(request, response) {
   const sharedSecret = process.env.RSVP_SHARED_SECRET;
 
   if (!scriptUrl || !sharedSecret) {
+    console.error('RSVP server configuration missing');
     return sendJson(response, 500, { ok: false, error: 'server_not_configured' });
   }
 
@@ -46,34 +105,24 @@ export default async function handler(request, response) {
       return sendJson(response, 400, { ok: false, error: 'invalid_payload' });
     }
 
-    const upstream = await fetch(scriptUrl, {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        secret: sharedSecret,
-        name,
-        whatsapp,
-        foodRestriction,
-        source: 'laris30-web',
-      }),
-      redirect: 'follow',
+    const result = await sendToAppsScript(scriptUrl, {
+      secret: sharedSecret,
+      name,
+      whatsapp,
+      foodRestriction,
+      source: 'laris30-web',
     });
 
-    const text = await upstream.text();
-    let result = null;
-
-    try {
-      result = JSON.parse(text);
-    } catch {
-      result = null;
-    }
-
-    if (!upstream.ok || result?.ok !== true) {
+    if (!result.ok) {
+      console.error('RSVP upstream exhausted retries', result.failure);
       return sendJson(response, 502, { ok: false, error: 'upstream_error' });
     }
 
     return sendJson(response, 200, { ok: true });
-  } catch {
+  } catch (error) {
+    console.error('RSVP internal error', {
+      message: error instanceof Error ? error.message : 'unknown_error',
+    });
     return sendJson(response, 500, { ok: false, error: 'internal_error' });
   }
 }
