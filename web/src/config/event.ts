@@ -10,40 +10,23 @@
  * that is `null` must render as an intentional "Em Breve" state or be hidden.
  * Nothing here may be invented: a value only stops being `null` when it is
  * confirmed in docs/CONTENT_PENDING.md.
- *
- * @see docs/CONTENT_PENDING.md — the operational checklist this file mirrors
- * @see docs/LARI30_BRIEFING_MASTER.md §24 — the approved shape
  */
 
 export interface Celebrant {
   name: string;
-  /** Official project wordmark. Never "LARI 30" or "LARISSA 30". */
   wordmark: string;
-  /** Project signature line, always paired with the wordmark. */
   signature: string;
   age: number;
 }
 
-/** CONTENT_PENDING §2 tracks start and end separately. */
 export interface EventTime {
-  /** 24h local time, e.g. "14:00". */
   start: string | null;
   end: string | null;
 }
 
-/** CONTENT_PENDING §3. Until confirmed: "CHÁCARA / ENDEREÇO EM BREVE". */
 export interface Venue {
-  /**
-   * The kind of venue, which IS confirmed ("Formato do local: chácara" —
-   * CONTENT_PENDING §1). Distinct from `name`: the venue's actual name has not
-   * been confirmed and must never be inferred from this.
-   */
   type: string;
   name: string | null;
-  /**
-   * Broad region of the venue — confirmed ahead of the exact address. Kept
-   * separate from `city`, which is a different (still unconfirmed) fact.
-   */
   area: string | null;
   address: string | null;
   city: string | null;
@@ -51,36 +34,22 @@ export interface Venue {
   wazeUrl: string | null;
 }
 
-/** CONTENT_PENDING §4. The amount is confirmed; the key is not. */
 export interface Pix {
   key: string | null;
-  /** e.g. "cpf" | "telefone" | "email" | "aleatoria" — confirm before typing further. */
   keyType: string | null;
-  /** Account holder name, only if it will be displayed. */
   holder: string | null;
-  /** ISO date, payment deadline. */
   deadline: string | null;
 }
 
-/** CONTENT_PENDING §5. */
 export interface Rsvp {
-  /** ISO date. */
   deadline: string | null;
-  /** Google Apps Script Web App URL — comes from an env var at CP9, never committed. */
+  /** Same-origin public API endpoint. The Google Apps Script URL stays server-side in Vercel. */
   endpoint: string | null;
-  /** WhatsApp number that receives questions / payment proof. */
   whatsapp: string | null;
 }
 
-/**
- * CONTENT_PENDING §6, §7, §8, §9.
- * These gate FAQ answers. While `null`, the FAQ must not assert a rule —
- * the copy already written in the design-system .dc.html files is
- * illustrative placeholder, not confirmed fact.
- */
 export interface Policies {
   companions: string | null;
-  /** What a guest should bring. */
   bring: string | null;
   pool: string | null;
   parking: string | null;
@@ -89,12 +58,9 @@ export interface Policies {
 
 export interface EventConfig {
   celebrant: Celebrant;
-  /** Party theme. Confirmed. */
   theme: string;
-  /** ISO date. Confirmed. */
   date: string;
   time: EventTime;
-  /** Shared cost per person, in BRL. Confirmed. */
   contribution: number;
   venue: Venue;
   pix: Pix;
@@ -111,7 +77,6 @@ export const event: EventConfig = {
   },
 
   theme: 'POOL PARTY',
-
   date: '2026-08-22',
 
   time: {
@@ -132,8 +97,6 @@ export const event: EventConfig = {
   },
 
   pix: {
-    // Stored exactly as the payment app expects it — digits only. Any
-    // formatting is a presentation concern and never changes this value.
     key: '11952196901',
     keyType: 'telefone',
     holder: null,
@@ -142,7 +105,7 @@ export const event: EventConfig = {
 
   rsvp: {
     deadline: null,
-    endpoint: null,
+    endpoint: '/api/rsvp',
     whatsapp: '11952196901',
   },
 

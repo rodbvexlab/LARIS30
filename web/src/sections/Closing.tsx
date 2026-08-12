@@ -21,13 +21,10 @@ import { event } from '../config/event';
  * navigation, no social icons.
  */
 
-const CLOSING_LINES = ['See You', 'By The Pool'] as const;
+const CLOSING_LINES = ['VEJO VOCÊ', 'LÁ EM!!'] as const;
 
 export function Closing() {
   return (
-    // The sunburst is the section's own background rather than a layer: there
-    // is no parallax here, and a CSS background needs no aria-hiding since it
-    // never reaches the accessibility tree.
     <motion.section
       className="bg-sunburst"
       variants={staggerGroup(0.14)}
@@ -56,8 +53,6 @@ export function Closing() {
         ))}
       </motion.h2>
 
-      {/* Disco journey, touchpoint 3 of 3 — the largest of the three, mirroring
-          the Hero's to close the loop. Slowest drift of the three. */}
       <motion.div
         variants={staggerItem}
         style={{ display: 'flex', justifyContent: 'center', margin: 'var(--space-5) 0' }}
@@ -65,7 +60,6 @@ export function Closing() {
         <FloatingDisco size={76} duration={7} delay={0.2} />
       </motion.div>
 
-      {/* Real text, never an image — and never retyped: both come from config. */}
       <motion.p
         variants={staggerItem}
         style={{ font: '900 44px var(--font-display)', color: 'var(--ink)' }}

@@ -4,7 +4,7 @@ import { SectionKicker } from '../components/ui';
 import { VIEWPORT, groupReveal, staggerGroup, staggerItem } from '../components/motion';
 
 /**
- * What's Included — section 7 of 13.
+ * O que está incluso — section 7 of 13.
  *
  * Visual reference:
  *   reference/design-system/templates/invitation-experience/Included.dc.html
@@ -49,7 +49,7 @@ export function Included() {
         viewport={VIEWPORT}
       >
         <SectionKicker role="heading" aria-level={2}>
-          What&apos;s Included
+          O que está incluso
         </SectionKicker>
       </motion.div>
 
