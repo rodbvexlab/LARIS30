@@ -11,12 +11,25 @@ import type { HTMLAttributes, ReactNode } from 'react';
  * baked-in hex, since a file cannot inherit a token.
  */
 
+export type SectionKickerTone = 'default' | 'inverse';
+
 export interface SectionKickerProps extends Omit<HTMLAttributes<HTMLDivElement>, 'style'> {
   children: ReactNode;
   align?: 'left' | 'center';
+  /**
+   * `inverse` is for Deep Ink surfaces, where the default ink wave is
+   * invisible against the background. Only the wave changes — the label stays
+   * coral in both tones, since coral reads on ink and on the light surfaces.
+   */
+  tone?: SectionKickerTone;
 }
 
-export function SectionKicker({ children, align = 'left', ...rest }: SectionKickerProps) {
+export function SectionKicker({
+  children,
+  align = 'left',
+  tone = 'default',
+  ...rest
+}: SectionKickerProps) {
   return (
     <div {...rest} style={{ textAlign: align }}>
       <span
@@ -45,7 +58,7 @@ export function SectionKicker({ children, align = 'left', ...rest }: SectionKick
         <path
           d="M0 20 Q25 0 50 20 T100 20 T150 20 T200 20 T250 20 T300 20 T350 20 T400 20"
           fill="none"
-          stroke="var(--ink)"
+          stroke={tone === 'inverse' ? 'var(--warm-cream)' : 'var(--ink)'}
           strokeWidth="4"
         />
       </svg>

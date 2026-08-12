@@ -22,7 +22,7 @@ const LEAD = 'Traga sua bebida alcoólica favorita.';
  * Golden Rule that sentence cannot ship as written, so this says only what is
  * settled — that a shared base exists — and defers the contents.
  */
-const SUPPORT = 'O resto da estrutura de bebidas será confirmado em breve.';
+const SUPPORT = 'Os demais detalhes sobre bebidas serão confirmados em breve.';
 
 export function Byob() {
   return (

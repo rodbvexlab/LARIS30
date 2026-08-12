@@ -14,4 +14,4 @@ export { Card } from './Card';
 export type { CardProps, CardTone } from './Card';
 
 export { SectionKicker } from './SectionKicker';
-export type { SectionKickerProps } from './SectionKicker';
+export type { SectionKickerProps, SectionKickerTone } from './SectionKicker';

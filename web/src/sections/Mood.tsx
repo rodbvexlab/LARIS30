@@ -110,7 +110,7 @@ export function Mood() {
     // viewport and must never add to the page's horizontal scroll width.
     <section style={{ background: 'var(--ink)', padding: '56px 0', overflow: 'hidden' }}>
       <div style={{ padding: '0 var(--space-5)', textAlign: 'center', marginBottom: 'var(--space-5)' }}>
-        <SectionKicker align="center" role="heading" aria-level={2}>
+        <SectionKicker align="center" tone="inverse" role="heading" aria-level={2}>
           The Mood
         </SectionKicker>
       </div>

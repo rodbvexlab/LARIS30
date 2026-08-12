@@ -6,6 +6,11 @@ import { Mood } from './sections/Mood';
 import { Contribution } from './sections/Contribution';
 import { Included } from './sections/Included';
 import { Byob } from './sections/Byob';
+import { RSVP } from './sections/RSVP';
+import { Pix } from './sections/Pix';
+import { Location } from './sections/Location';
+import { FAQ } from './sections/FAQ';
+import { Closing } from './sections/Closing';
 
 /**
  * The experience container mirrors InvitationExperience.dc.html: a single
@@ -24,6 +29,11 @@ export default function App() {
       <Contribution />
       <Included />
       <Byob />
+      <RSVP />
+      <Pix />
+      <Location />
+      <FAQ />
+      <Closing />
     </div>
   );
 }

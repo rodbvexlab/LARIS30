@@ -18,9 +18,13 @@ import type { InputHTMLAttributes } from 'react';
 export interface InputProps extends Omit<InputHTMLAttributes<HTMLInputElement>, 'style'> {
   label?: string;
   /**
-   * Optional error message. Renders below the field and wires up
-   * `aria-invalid` / `aria-describedby`. The design system defines no error
-   * styling, so this stays type-only — no invented border or fill colour.
+   * Optional error message. Renders below the field, turns the border coral
+   * and wires up `aria-invalid` / `aria-describedby`.
+   *
+   * The treatment is deliberately quiet: geometry, fill and the Bubblegum
+   * focus ring are all unchanged, and the only signal is the border and the
+   * message swapping to coral. No icon, no red fill, no alert card, no shake —
+   * the design system has no such vocabulary.
    */
   error?: string;
 }
@@ -60,7 +64,7 @@ export function Input({ label, error, id, className, ...rest }: InputProps) {
         style={{
           font: 'var(--text-body)',
           padding: 'var(--space-3) 14px',
-          border: 'var(--border-w) solid var(--border-default)',
+          border: `var(--border-w) solid ${error ? 'var(--coral)' : 'var(--border-default)'}`,
           borderRadius: 'var(--radius-sharp)',
           background: 'var(--white)',
           color: 'var(--ink)',
