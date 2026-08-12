@@ -1,8 +1,12 @@
 import { useEffect, useRef, useState } from 'react';
 
+import { motion } from 'motion/react';
+
 import { Button, SectionKicker } from '../components/ui';
+import { EASE_POP, VIEWPORT, groupReveal } from '../components/motion';
 import { event } from '../config/event';
 import { resolvePending } from '../lib/pending';
+import { formatBrazilianPhone } from '../lib/phone';
 
 /**
  * PIX — section 10 of 13.
@@ -69,6 +73,14 @@ export function Pix() {
   const pixKey = event.pix.key;
   const key = resolvePending(pixKey);
 
+  /**
+   * Shown formatted, copied raw. A phone-type key is unreadable as a digit
+   * run, but the punctuation is presentation only — `handleCopy` always writes
+   * `pixKey` itself, so what lands on the clipboard is what the bank expects.
+   */
+  const displayKey =
+    pixKey && event.pix.keyType === 'telefone' ? formatBrazilianPhone(pixKey) : key.text;
+
   async function handleCopy() {
     if (!pixKey) return;
 
@@ -83,7 +95,11 @@ export function Pix() {
     state === 'copied' ? COPIED_LABEL : state === 'failed' ? COPY_FAILED_LABEL : COPY_LABEL;
 
   return (
-    <section
+    <motion.section
+      variants={groupReveal}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VIEWPORT}
       style={{
         background: 'var(--white)',
         padding: '56px var(--space-5)',
@@ -116,10 +132,16 @@ export function Pix() {
           wordBreak: 'break-all',
         }}
       >
-        Chave Pix · {key.text}
+        Chave Pix · {displayKey}
       </p>
 
-      <div style={{ marginTop: '18px', display: 'flex', justifyContent: 'center' }}>
+      {/* A single pop when the copy lands — enough to register the change,
+          short of celebrating a payment. No confetti here. */}
+      <motion.div
+        animate={state === 'copied' ? { scale: [1, 1.06, 1] } : { scale: 1 }}
+        transition={{ duration: 0.32, ease: EASE_POP }}
+        style={{ marginTop: '18px', display: 'flex', justifyContent: 'center' }}
+      >
         <Button
           variant={state === 'copied' ? 'secondary' : 'primary'}
           size="lg"
@@ -128,7 +150,7 @@ export function Pix() {
         >
           {label}
         </Button>
-      </div>
+      </motion.div>
 
       {/* The button's own label change is not reliably announced, so the
           result is mirrored into a live region. */}
@@ -146,6 +168,6 @@ export function Pix() {
         {state === 'copied' ? 'Chave Pix copiada.' : ''}
         {state === 'failed' ? 'Não foi possível copiar a chave Pix.' : ''}
       </p>
-    </section>
+    </motion.section>
   );
 }

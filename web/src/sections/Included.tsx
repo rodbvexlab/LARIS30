@@ -1,4 +1,7 @@
+import { motion } from 'motion/react';
+
 import { SectionKicker } from '../components/ui';
+import { VIEWPORT, groupReveal, staggerGroup, staggerItem } from '../components/motion';
 
 /**
  * What's Included — section 7 of 13.
@@ -20,30 +23,41 @@ interface IncludedItem {
   color?: string;
 }
 
-// CONTENT PENDING: validar lista final com Larissa antes do release
-// (CONTENT_PENDING §10 — the planning list is approved as design content, but
-// which items are actually guaranteed on the day is still unvalidated.)
+/**
+ * The approved list, and deliberately about the experience rather than an
+ * inventory: naming supplies (ice, water, dessert) both reads like a receipt
+ * and commits to items CONTENT_PENDING §10 has not settled. Only the churrasco
+ * is a concrete deliverable here; the rest is what the day feels like, which
+ * nothing can contradict later.
+ */
 const INCLUDED_ITEMS: readonly IncludedItem[] = [
-  { label: 'Chácara' },
   { label: 'Churrasco', surface: 'var(--sun-yellow)' },
-  { label: 'Acompanhamentos' },
-  { label: 'Frutas / Sobremesa', surface: 'var(--accent-blush)' },
-  { label: 'Welcome Drink' },
-  { label: 'Água', surface: 'var(--pool-blue)' },
-  { label: 'Refrigerante / Suco' },
-  { label: 'Gelo' },
-  { label: 'Decoração / Estrutura', surface: 'var(--bubblegum)', color: 'var(--white)' },
-  { label: 'Mimos' },
+  { label: 'Música boa' },
+  { label: 'Muita festa', surface: 'var(--accent-blush)' },
+  { label: 'Bons papos' },
+  { label: 'Gente querida', surface: 'var(--pool-blue)' },
+  { label: 'Energia lá em cima', surface: 'var(--bubblegum)', color: 'var(--white)' },
 ];
 
 export function Included() {
   return (
     <section style={{ background: 'var(--white)', padding: 'var(--space-2) var(--space-5) 56px' }}>
-      <SectionKicker role="heading" aria-level={2}>
-        What&apos;s Included
-      </SectionKicker>
+      <motion.div
+        variants={groupReveal}
+        initial="hidden"
+        whileInView="visible"
+        viewport={VIEWPORT}
+      >
+        <SectionKicker role="heading" aria-level={2}>
+          What&apos;s Included
+        </SectionKicker>
+      </motion.div>
 
-      <ul
+      <motion.ul
+        variants={staggerGroup(0.06, 0.08)}
+        initial="hidden"
+        whileInView="visible"
+        viewport={VIEWPORT}
         style={{
           display: 'flex',
           flexWrap: 'wrap',
@@ -55,8 +69,9 @@ export function Included() {
         }}
       >
         {INCLUDED_ITEMS.map((item) => (
-          <li
+          <motion.li
             key={item.label}
+            variants={staggerItem}
             style={{
               border: 'var(--border-w) solid var(--ink)',
               borderRadius: 'var(--radius-pill)',
@@ -69,9 +84,9 @@ export function Included() {
             }}
           >
             {item.label}
-          </li>
+          </motion.li>
         ))}
-      </ul>
+      </motion.ul>
     </section>
   );
 }

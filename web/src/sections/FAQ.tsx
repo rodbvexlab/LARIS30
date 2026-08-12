@@ -2,6 +2,7 @@ import { useId, useState } from 'react';
 
 import { SectionKicker } from '../components/ui';
 import { event } from '../config/event';
+import { formatEventTime } from '../lib/date';
 
 /**
  * FAQ — section 12 of 13.
@@ -23,9 +24,11 @@ interface FaqItem {
   answer: string;
 }
 
-/** Confirmed regardless of config: the BYOB model itself is settled. */
-const BYOB_LEAD = 'Traga sua bebida alcoólica favorita.';
-
+/**
+ * Every answer is `config value ?? pending sentence`. The fallbacks are not
+ * dead code: they are what keeps the accordion honest if a policy is ever
+ * cleared back to null, and they are the reason no question can render empty.
+ */
 function buildFaqItems(): FaqItem[] {
   const { policies, time } = event;
 
@@ -38,9 +41,7 @@ function buildFaqItems(): FaqItem[] {
     {
       id: 'levar',
       question: 'O que devo levar?',
-      // Only the drink is asserted. Towel, swimwear and cooler all depend on
-      // pool and venue rules that are still open (CONTENT_PENDING §7/§9).
-      answer: `${BYOB_LEAD} Outros detalhes serão confirmados em breve.`,
+      answer: policies.bring ?? 'A lista do que levar será confirmada em breve.',
     },
     {
       id: 'piscina',
@@ -56,15 +57,15 @@ function buildFaqItems(): FaqItem[] {
     {
       id: 'bebida',
       question: 'Como funciona a bebida?',
-      answer:
-        policies.drinks ??
-        `O formato será BYOB: ${BYOB_LEAD.toLowerCase()} Os demais detalhes sobre bebidas serão confirmados em breve.`,
+      answer: policies.drinks ?? 'Os detalhes sobre bebidas serão confirmados em breve.',
     },
     {
       id: 'horario',
       question: 'Qual o horário?',
+      // Opening time only — the end time is still unconfirmed, so the answer
+      // must not imply a window.
       answer: time.start
-        ? `A festa começa às ${time.start}.`
+        ? `A partir das ${formatEventTime(time.start)}.`
         : 'O horário será divulgado em breve.',
     },
   ];

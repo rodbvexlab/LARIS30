@@ -1,3 +1,8 @@
+import { motion } from 'motion/react';
+
+import { VIEWPORT, staggerGroup, staggerItem } from '../components/motion';
+import { event } from '../config/event';
+
 /**
  * BYOB — section 8 of 13.
  *
@@ -9,35 +14,55 @@
  */
 
 const TITLE = 'BYOB';
-
-/** Confirmed: CONTENT_PENDING §9 lists the BYOB model and this instruction. */
 const LEAD = 'Traga sua bebida alcoólica favorita.';
 
 /**
- * CONTENT PENDING: provisional wording, needs approval (CONTENT_PENDING §9/§16).
+ * The drinks fact lives in event.ts and is never retyped here.
  *
- * The reference reads "Teremos welcome drink e estrutura básica de bebidas
- * disponível", which names items CONTENT_PENDING §9 explicitly still lists as
- * unvalidated ("quais itens estarão efetivamente garantidos no dia"). Under the
- * Golden Rule that sentence cannot ship as written, so this says only what is
- * settled — that a shared base exists — and defers the contents.
+ * `policies.drinks` is written as a full FAQ answer — "Open Cooler: traga sua
+ * bebida favorita. Também teremos refrigerante e suquinho!" — and its middle
+ * clause repeats what LEAD already says two lines above. So the format name
+ * and everything after that first sentence are kept, and the duplicate
+ * instruction is dropped. Change the config and this follows.
  */
-const SUPPORT = 'Os demais detalhes sobre bebidas serão confirmados em breve.';
+function compactDrinks(drinks: string | null): string | null {
+  if (!drinks) return null;
+
+  const [format, ...remainder] = drinks.split(/:\s*/);
+  if (!format) return drinks;
+  if (remainder.length === 0) return drinks;
+
+  // Everything past the first sentence — the part LEAD does not already cover.
+  const sentences = remainder.join(': ').split(/(?<=[.!?])\s+/);
+  const extra = sentences.slice(1).join(' ').trim();
+
+  return extra ? `${format} — ${extra}` : format;
+}
+
+const SUPPORT = compactDrinks(event.policies.drinks);
 
 export function Byob() {
   return (
-    <section
+    <motion.section
+      variants={staggerGroup(0.1)}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VIEWPORT}
       style={{
         background: 'var(--ink)',
         padding: '64px var(--space-5)',
         textAlign: 'center',
       }}
     >
-      <h2 style={{ font: '900 60px/0.95 var(--font-display)', color: 'var(--sun-yellow)' }}>
+      <motion.h2
+        variants={staggerItem}
+        style={{ font: '900 60px/0.95 var(--font-display)', color: 'var(--sun-yellow)' }}
+      >
         {TITLE}
-      </h2>
+      </motion.h2>
 
-      <p
+      <motion.p
+        variants={staggerItem}
         style={{
           font: '600 16px/1.5 var(--font-body)',
           color: 'var(--warm-cream)',
@@ -46,18 +71,21 @@ export function Byob() {
         }}
       >
         {LEAD}
-      </p>
+      </motion.p>
 
-      <p
-        style={{
-          font: '500 14px/1.5 var(--font-body)',
-          color: 'var(--chrome-1)',
-          maxWidth: '300px',
-          margin: '10px auto 0',
-        }}
-      >
-        {SUPPORT}
-      </p>
-    </section>
+      {SUPPORT && (
+        <motion.p
+          variants={staggerItem}
+          style={{
+            font: '500 14px/1.5 var(--font-body)',
+            color: 'var(--chrome-1)',
+            maxWidth: '300px',
+            margin: '10px auto 0',
+          }}
+        >
+          {SUPPORT}
+        </motion.p>
+      )}
+    </motion.section>
   );
 }

@@ -1,4 +1,8 @@
+import { motion, useScroll, useTransform } from 'motion/react';
+
 import { Button } from '../components/ui';
+import { FloatingDisco, EASE_POP } from '../components/motion';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
 import { event } from '../config/event';
 import { formatEventDate } from '../lib/date';
 import larisPhoto from '../assets/laris/laris-fashion.png';
@@ -9,17 +13,20 @@ import larisPhoto from '../assets/laris/laris-fashion.png';
  * Visual reference:
  *   reference/design-system/templates/invitation-experience/Hero.dc.html
  *
- * CP2 is the static composition. The motion described in MOTION-SPEC.md
- * (PageLoadSequence, ScrollParallax, FloatingDisco) lands at CP7; nothing here
- * animates yet, and the layout is built so those layers can be wrapped around
- * it without restructuring.
+ * Two motion systems, both scoped to this screen:
  *
- * Layout numbers below are the composition rhythm taken verbatim from
- * Hero.dc.html. They are one-off editorial values, not scale steps, so they
- * stay literal — colour, type, radius and shadow all come from tokens.
+ *  - the opening sequence, which lands element by element on mount and then
+ *    stops. Larissa arrives and stays put; she is the one thing on the page
+ *    that must not keep moving.
+ *  - a scroll-linked parallax, clamped to the first 600px so it settles
+ *    instead of drifting forever. This is the only scroll-driven effect in the
+ *    whole experience, kept singular so "cinematic" reads as one considered
+ *    moment rather than a page-wide tic.
+ *
+ * Layout numbers are the composition rhythm from the reference. Colour, type,
+ * radius and shadow all come from tokens.
  */
 
-/** Interface copy, not event data. ✦ is part of the approved graphic language. */
 const INVITE_LABEL = "You're Invited";
 const CTA_LABEL = 'EU VOU ✦';
 
@@ -27,10 +34,30 @@ const CTA_LABEL = 'EU VOU ✦';
 const PHOTO_WIDTH = 1536;
 const PHOTO_HEIGHT = 1024;
 
-/**
- * "LARIS 30" -> ["LARIS", "30"], so the two display lines stay derived from
- * the configured wordmark instead of being retyped here.
- */
+/** Where the CTA sends the guest. */
+const RSVP_ANCHOR = 'confirmacao';
+
+/** Opening sequence, in ms. Mirrors MOTION-SPEC A. */
+const BEAT = {
+  label: 150,
+  name: 250,
+  age: 330,
+  signature: 450,
+  theme: 520,
+  photo: 650,
+  date: 800,
+  cta: 950,
+} as const;
+
+/** One element of the opening: fade up, once, then done. */
+function entrance(delayMs: number) {
+  return {
+    initial: { opacity: 0, y: 22 },
+    animate: { opacity: 1, y: 0 },
+    transition: { duration: 0.6, delay: delayMs / 1000, ease: EASE_POP },
+  };
+}
+
 function splitWordmark(wordmark: string): [string, string] {
   const separator = wordmark.lastIndexOf(' ');
   if (separator === -1) return [wordmark, ''];
@@ -39,6 +66,23 @@ function splitWordmark(wordmark: string): [string, string] {
 
 export function Hero() {
   const [name, age] = splitWordmark(event.celebrant.wordmark);
+  const reduced = usePrefersReducedMotion();
+  const { scrollY } = useScroll();
+
+  // Clamped to the Hero's own exit. Hooks run unconditionally; the values are
+  // simply not applied when the user asked for less motion.
+  const sunburstRotate = useTransform(scrollY, [0, 600], [0, 8]);
+  const sunburstScale = useTransform(scrollY, [0, 600], [1, 1.06]);
+  const wordmarkY = useTransform(scrollY, [0, 600], [0, -24]);
+  const photoScale = useTransform(scrollY, [0, 600], [1, 1.05]);
+  const discoY = useTransform(scrollY, [0, 600], [0, -30]);
+
+  function scrollToRsvp() {
+    document.getElementById(RSVP_ANCHOR)?.scrollIntoView({
+      behavior: reduced ? 'auto' : 'smooth',
+      block: 'start',
+    });
+  }
 
   return (
     <section
@@ -58,9 +102,18 @@ export function Hero() {
       }}
     >
       {/* Approved sunburst motif — CSS conic gradient, never an image. */}
-      <div className="bg-sunburst" aria-hidden="true" style={{ position: 'absolute', inset: 0 }} />
+      <motion.div
+        className="bg-sunburst"
+        aria-hidden="true"
+        style={{
+          position: 'absolute',
+          inset: 0,
+          ...(reduced ? null : { rotate: sunburstRotate, scale: sunburstScale }),
+        }}
+      />
 
-      <p
+      <motion.p
+        {...entrance(BEAT.label)}
         style={{
           position: 'relative',
           zIndex: 2,
@@ -72,20 +125,26 @@ export function Hero() {
         }}
       >
         {INVITE_LABEL}
-      </p>
+      </motion.p>
 
       {/*
-        The display sizes are the Hero's own literals (88px / 110px at 390px),
-        not the --text-display-* scale, whose 10vw ramp is far too small here.
-        They are wrapped in clamp() so they shrink below 390px — the ~10% drop
-        at 360px that MOTION-SPEC.md flags for the production pass — while
-        staying pinned to the approved values from 390px up.
+        Display sizes are the Hero's own literals (88px / 110px at 390px), not
+        the --text-display-* scale, whose 10vw ramp is far too small here. The
+        clamp shrinks them below 390px — the ~10% drop at 360px that
+        MOTION-SPEC.md flags — while staying pinned to the approved values from
+        390px up.
       */}
-      <h1
+      <motion.h1
         aria-label={event.celebrant.wordmark}
-        style={{ position: 'relative', zIndex: 2, marginTop: '10px' }}
+        style={{
+          position: 'relative',
+          zIndex: 2,
+          marginTop: '10px',
+          ...(reduced ? null : { y: wordmarkY }),
+        }}
       >
-        <span
+        <motion.span
+          {...entrance(BEAT.name)}
           style={{
             display: 'block',
             font: '900 clamp(4.5rem, 22.56vw, 5.5rem)/0.82 var(--font-display)',
@@ -94,8 +153,9 @@ export function Hero() {
           }}
         >
           {name}
-        </span>
-        <span
+        </motion.span>
+        <motion.span
+          {...entrance(BEAT.age)}
           style={{
             display: 'block',
             font: '900 clamp(5.625rem, 28.2vw, 6.875rem)/0.82 var(--font-display)',
@@ -103,10 +163,11 @@ export function Hero() {
           }}
         >
           {age}
-        </span>
-      </h1>
+        </motion.span>
+      </motion.h1>
 
-      <p
+      <motion.p
+        {...entrance(BEAT.signature)}
         style={{
           position: 'relative',
           zIndex: 2,
@@ -121,9 +182,10 @@ export function Hero() {
         }}
       >
         {event.celebrant.signature}
-      </p>
+      </motion.p>
 
-      <p
+      <motion.p
+        {...entrance(BEAT.theme)}
         style={{
           position: 'relative',
           zIndex: 2,
@@ -137,16 +199,18 @@ export function Hero() {
         }}
       >
         {event.theme}
-      </p>
+      </motion.p>
 
       {/*
         Editorial cutout, not an avatar: it runs wider than the text column and
         bleeds past the Hero's padding. 115% is sized so the figure's own
         bounding box lands just inside the viewport — the only pixels the
-        Hero's overflow clips are the transparent margin baked into the file,
-        so nothing of Larissa is ever cropped.
+        Hero's overflow clips are the transparent margin baked into the file.
       */}
-      <div
+      <motion.div
+        initial={{ opacity: 0, y: 18, scale: 0.94 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.7, delay: BEAT.photo / 1000, ease: EASE_POP }}
         style={{
           position: 'relative',
           zIndex: 2,
@@ -170,7 +234,7 @@ export function Hero() {
             opacity: 0.5,
           }}
         />
-        <img
+        <motion.img
           src={larisPhoto}
           width={PHOTO_WIDTH}
           height={PHOTO_HEIGHT}
@@ -183,25 +247,25 @@ export function Hero() {
             height: 'auto',
             display: 'block',
             objectFit: 'contain',
+            ...(reduced ? null : { scale: photoScale }),
           }}
         />
-      </div>
+      </motion.div>
 
-      {/* Disco journey, touchpoint 1 of 3. Static in CP2. */}
-      <div
-        className="chrome-sphere"
-        aria-hidden="true"
+      {/* Disco journey, touchpoint 1 of 3. */}
+      <motion.div
         style={{
           position: 'relative',
           zIndex: 2,
           marginTop: '14px',
-          width: '64px',
-          height: '64px',
-          flexShrink: 0,
+          ...(reduced ? null : { y: discoY }),
         }}
-      />
+      >
+        <FloatingDisco size={64} duration={6.5} />
+      </motion.div>
 
-      <p
+      <motion.p
+        {...entrance(BEAT.date)}
         style={{
           position: 'relative',
           zIndex: 2,
@@ -216,14 +280,14 @@ export function Hero() {
         }}
       >
         {formatEventDate(event.date)}
-      </p>
+      </motion.p>
 
-      <div style={{ position: 'relative', zIndex: 2, marginTop: '20px' }}>
-        {/* Scrolls to the RSVP section once that section exists (CP5). */}
-        <Button variant="primary" size="lg">
+      <motion.div {...entrance(BEAT.cta)} style={{ position: 'relative', zIndex: 2, marginTop: '20px' }}>
+        <Button variant="primary" size="lg" onClick={scrollToRsvp}>
           {CTA_LABEL}
         </Button>
-      </div>
+      </motion.div>
     </section>
   );
 }
+

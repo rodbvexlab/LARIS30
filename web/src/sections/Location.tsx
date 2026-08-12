@@ -1,6 +1,8 @@
 import type { CSSProperties } from 'react';
+import { motion } from 'motion/react';
 
 import { SectionKicker } from '../components/ui';
+import { VIEWPORT, groupReveal } from '../components/motion';
 import { event } from '../config/event';
 import { resolvePending } from '../lib/pending';
 
@@ -80,7 +82,13 @@ export function Location() {
   const address = resolvePending(event.venue.address);
 
   return (
-    <section
+    // One group reveal, and nothing on the Maps/Waze actions: they are
+    // unavailable, and motion on a dead control reads as a promise.
+    <motion.section
+      variants={groupReveal}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VIEWPORT}
       style={{
         background: 'var(--accent-blush)',
         padding: '56px var(--space-5)',
@@ -99,7 +107,9 @@ export function Location() {
         {event.venue.name ?? event.venue.type}
       </h2>
 
-      {event.venue.city && (
+      {/* Region is confirmed; the city is not, so whichever exists is shown
+          and neither is inferred from the other. */}
+      {(event.venue.area ?? event.venue.city) && (
         <p
           style={{
             fontFamily: 'var(--font-body)',
@@ -109,7 +119,7 @@ export function Location() {
             marginTop: 'var(--space-1)',
           }}
         >
-          {event.venue.city}
+          {event.venue.area ?? event.venue.city}
         </p>
       )}
 
@@ -145,6 +155,6 @@ export function Location() {
           unavailableText="Waze disponível quando o endereço for confirmado."
         />
       </div>
-    </section>
+    </motion.section>
   );
 }

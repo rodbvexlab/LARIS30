@@ -60,6 +60,18 @@ export function formatEventDate(iso: string): string {
 }
 
 /**
+ * "14:00" -> "14h00", the Brazilian way of writing a time on an invitation.
+ * The stored value stays 24h "HH:MM"; this is presentation only.
+ */
+export function formatEventTime(value: string): string {
+  const match = /^(\d{1,2}):(\d{2})$/.exec(value);
+  if (!match) return value;
+
+  const [, hours, minutes] = match as unknown as [string, string, string];
+  return `${hours}h${minutes}`;
+}
+
+/**
  * "2026-08-22" -> "22 Ago 2026", the Party Info row format.
  * Same fallback behaviour as formatEventDate.
  */

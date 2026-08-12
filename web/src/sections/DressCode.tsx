@@ -1,4 +1,7 @@
+import { motion } from 'motion/react';
+
 import { SectionKicker } from '../components/ui';
+import { VIEWPORT, groupReveal, popItem, staggerGroup } from '../components/motion';
 
 /**
  * Dress Code — section 4 of 13.
@@ -6,45 +9,36 @@ import { SectionKicker } from '../components/ui';
  * Visual reference:
  *   reference/design-system/templates/invitation-experience/DressCode.dc.html
  *
- * A fashion film strip, not an e-commerce carousel: cards run wider than the
- * viewport at 62% each, so the next look is always half-visible and the strip
- * reads as a continuing band rather than a paged gallery.
+ * Reduced to a single instruction and a palette. The reference's four-look
+ * film strip is gone: it depended on outfit photography that was never going
+ * to exist, and colour communicates the whole dress code on its own — which is
+ * also the more honest version, since "come colorido" is the entire rule.
  *
- * Scrolling is native overflow — no carousel library, no Motion drag. Native
- * panning is also what keeps the vertical page scroll working: `touch-action`
- * is left at its default, so a vertical swipe inside the strip still scrolls
- * the page. Motion drag arrives with the real assets.
+ * The circles are the guidance. They are decorative and carry no text, so they
+ * stay out of the accessibility tree; the heading above says everything a
+ * screen reader needs.
  */
 
-/**
- * The four looks have no approved assets yet (CONTENT_PENDING §14). These are
- * intentional placeholders, not loading states: flat design-system colour
- * blocks holding the exact frame the photos will occupy. Swapping them for real
- * images means adding a `src`/`alt` to each entry and rendering an <img> in the
- * slot — the geometry above it does not change.
- */
-interface LookSlot {
-  id: string;
-  label: string;
-  surface: string;
-  /** Ink reads on every surface here except the deepest one. */
-  ink?: string;
-}
+const TITLE = 'SUMMER VIBES';
 
-const LOOK_SLOTS: readonly LookSlot[] = [
-  { id: 'look-1', label: 'Look 1', surface: 'var(--accent-blush)' },
-  { id: 'look-2', label: 'Look 2', surface: 'var(--sun-yellow)' },
-  { id: 'look-3', label: 'Look 3', surface: 'var(--pool-blue)' },
-  { id: 'look-4', label: 'Look 4', surface: 'var(--summer-orange)' },
-];
-
-const TITLE = 'COME COLORIDO.';
-const SUPPORT = 'SUMMER & COLORFUL VIBES';
+/** The palette guests are being pointed at, straight from the tokens. */
+const PALETTE = [
+  'var(--coral)',
+  'var(--bubblegum)',
+  'var(--sun-yellow)',
+  'var(--pool-blue)',
+  'var(--summer-orange)',
+] as const;
 
 export function DressCode() {
   return (
-    <section style={{ background: 'var(--white)', padding: '56px 0 60px' }}>
-      <div style={{ padding: '0 var(--space-5)' }}>
+    <section style={{ background: 'var(--white)', padding: '56px var(--space-5)' }}>
+      <motion.div
+        variants={groupReveal}
+        initial="hidden"
+        whileInView="visible"
+        viewport={VIEWPORT}
+      >
         <SectionKicker>Dress Code</SectionKicker>
 
         <h2
@@ -56,72 +50,37 @@ export function DressCode() {
         >
           {TITLE}
         </h2>
+      </motion.div>
 
-        <p
-          style={{
-            fontFamily: 'var(--font-body)',
-            fontSize: '14px',
-            fontWeight: 500,
-            letterSpacing: '0.08em',
-            color: 'var(--text-muted)',
-            marginTop: 'var(--space-2)',
-          }}
-        >
-          {SUPPORT}
-        </p>
-      </div>
-
-      <ul
+      {/* The dots pop in one by one, then hold. Nothing pulses. */}
+      <motion.div
+        aria-hidden="true"
+        variants={staggerGroup(0.07, 0.1)}
+        initial="hidden"
+        whileInView="visible"
+        viewport={VIEWPORT}
         style={{
           display: 'flex',
           gap: '12px',
-          overflowX: 'auto',
-          padding: '26px var(--space-5) var(--space-2)',
-          margin: 0,
-          listStyle: 'none',
-          scrollSnapType: 'x proximity',
-          // Without this the snapport starts at the padding edge, so the
-          // browser immediately snaps the first card 24px left and it ends up
-          // flush against the screen edge, out of line with the kicker above.
-          scrollPaddingLeft: 'var(--space-5)',
-          // Stops a horizontal fling from chaining to the browser's
-          // back-gesture in the iOS/Android in-app webviews.
-          overscrollBehaviorX: 'contain',
+          flexWrap: 'wrap',
+          marginTop: 'var(--space-5)',
         }}
       >
-        {LOOK_SLOTS.map((slot) => (
-          <li
-            key={slot.id}
+        {PALETTE.map((color) => (
+          <motion.span
+            key={color}
+            variants={popItem}
             style={{
-              flex: '0 0 62%',
-              aspectRatio: '3 / 4',
-              scrollSnapAlign: 'start',
+              width: '48px',
+              height: '48px',
+              borderRadius: '50%',
+              background: color,
               border: 'var(--border-w) solid var(--ink)',
-              borderRadius: 'var(--radius-sharp)',
-              overflow: 'hidden',
-              background: slot.surface,
-              display: 'flex',
-              alignItems: 'flex-end',
-              padding: 'var(--space-4)',
+              flexShrink: 0,
             }}
-          >
-            {/* Real text, not a fake image: a screen reader reads exactly what
-                is on screen. Replaced by the photo's alt when assets land. */}
-            <span
-              style={{
-                fontFamily: 'var(--font-body)',
-                fontSize: '12px',
-                fontWeight: 700,
-                letterSpacing: '0.14em',
-                textTransform: 'uppercase',
-                color: slot.ink ?? 'var(--ink)',
-              }}
-            >
-              {slot.label}
-            </span>
-          </li>
+          />
         ))}
-      </ul>
+      </motion.div>
     </section>
   );
 }

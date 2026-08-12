@@ -1,9 +1,11 @@
 import type { ReactNode } from 'react';
+import { motion } from 'motion/react';
 
 import { SectionKicker } from '../components/ui';
+import { VIEWPORT, groupReveal } from '../components/motion';
 import { event } from '../config/event';
-import { formatEventDatePlain } from '../lib/date';
-import { resolvePending } from '../lib/pending';
+import { formatEventDatePlain, formatEventTime } from '../lib/date';
+import { PENDING_LABEL, resolvePending } from '../lib/pending';
 
 /**
  * Party Info — section 3 of 13.
@@ -25,13 +27,24 @@ interface InfoRowProps {
   value: string;
   /** Unconfirmed values are set in coral, matching the reference's "Em Breve". */
   pending?: boolean;
+  /** Small line above the value — qualifies it without shrinking the number. */
+  prefix?: string;
   /** Secondary line under the value, used by the venue row. */
   detail?: ReactNode;
   /** The reference drops the rule under the last row. */
   divider?: boolean;
 }
 
-function InfoRow({ label, value, pending = false, detail, divider = true }: InfoRowProps) {
+/** Shared styling for the small lines that sit above and below a value. */
+const SUPPORT_LINE = {
+  display: 'block',
+  fontFamily: 'var(--font-body)',
+  fontSize: '13px',
+  fontWeight: 600,
+  color: 'var(--text-muted)',
+} as const;
+
+function InfoRow({ label, value, pending = false, prefix, detail, divider = true }: InfoRowProps) {
   return (
     <div
       style={{
@@ -67,31 +80,30 @@ function InfoRow({ label, value, pending = false, detail, divider = true }: Info
           textAlign: 'right',
         }}
       >
-        {value}
-        {detail && (
-          <span
-            style={{
-              display: 'block',
-              fontFamily: 'var(--font-body)',
-              fontSize: '13px',
-              fontWeight: 600,
-              color: 'var(--text-muted)',
-            }}
-          >
-            {detail}
+        {prefix && (
+          <span style={{ ...SUPPORT_LINE, textTransform: 'uppercase', letterSpacing: '0.1em' }}>
+            {prefix}
           </span>
         )}
+        {value}
+        {detail && <span style={SUPPORT_LINE}>{detail}</span>}
       </span>
     </div>
   );
 }
 
 export function PartyInfo() {
-  const time = resolvePending(event.time.start);
+  const startTime = event.time.start;
   const address = resolvePending(event.venue.address);
 
   return (
-    <section
+    // Arrives as one block: animating each row separately would turn a
+    // three-line fact sheet into a performance.
+    <motion.section
+      variants={groupReveal}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VIEWPORT}
       style={{
         background: 'var(--warm-cream)',
         padding: '56px var(--space-5)',
@@ -108,7 +120,14 @@ export function PartyInfo() {
 
       <InfoRow label="Data" value={formatEventDatePlain(event.date)} />
 
-      <InfoRow label="Horário" value={time.text} pending={time.pending} />
+      {/* The end time is still unconfirmed, so the row states an opening time
+          rather than a window — "A partir das" carries that honestly. */}
+      <InfoRow
+        label="Horário"
+        value={startTime ? formatEventTime(startTime) : PENDING_LABEL}
+        pending={startTime === null}
+        prefix={startTime ? 'A partir das' : undefined}
+      />
 
       {/*
         The venue TYPE is confirmed ("Chácara"); its name, address and city are
@@ -120,6 +139,6 @@ export function PartyInfo() {
         detail={address.pending ? 'Endereço em breve' : address.text}
         divider={false}
       />
-    </section>
+    </motion.section>
   );
 }

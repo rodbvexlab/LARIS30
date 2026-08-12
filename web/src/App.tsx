@@ -1,3 +1,5 @@
+import { MotionConfig } from 'motion/react';
+
 import { Hero } from './sections/Hero';
 import { Vibe } from './sections/Vibe';
 import { PartyInfo } from './sections/PartyInfo';
@@ -20,6 +22,11 @@ import { Closing } from './sections/Closing';
  */
 export default function App() {
   return (
+    // reducedMotion="user" neutralises transform animation across the whole
+    // tree when the OS asks for it. The three things it cannot reach — the
+    // Hero's scroll-linked parallax, the ambient drifts and the confetti —
+    // each check usePrefersReducedMotion directly.
+    <MotionConfig reducedMotion="user">
     <div style={{ maxWidth: '430px', margin: '0 auto', background: 'var(--warm-cream)' }}>
       <Hero />
       <Vibe />
@@ -35,5 +42,6 @@ export default function App() {
       <FAQ />
       <Closing />
     </div>
+    </MotionConfig>
   );
 }

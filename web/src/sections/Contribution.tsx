@@ -1,4 +1,7 @@
+import { motion } from 'motion/react';
+
 import { SectionKicker } from '../components/ui';
+import { VIEWPORT, amountPop, groupReveal, staggerGroup } from '../components/motion';
 import { event } from '../config/event';
 
 /**
@@ -22,22 +25,30 @@ const SUPPORT = 'A contribuição ajuda a cobrir a estrutura compartilhada da fe
 
 export function Contribution() {
   return (
-    <section
+    <motion.section
+      variants={staggerGroup(0.12)}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VIEWPORT}
       style={{
         background: 'var(--warm-cream)',
         padding: '64px var(--space-5)',
         textAlign: 'center',
       }}
     >
-      <SectionKicker align="center" role="heading" aria-level={2}>
-        Rateio
-      </SectionKicker>
+      <motion.div variants={groupReveal}>
+        <SectionKicker align="center" role="heading" aria-level={2}>
+          Rateio
+        </SectionKicker>
+      </motion.div>
 
       {/*
         Real text, never an image. clamp() holds the reference's 96px from
         390px up and eases it down on narrower screens so it cannot overflow.
+        One short punch on arrival — no counter, no ticking, no loop.
       */}
-      <p
+      <motion.p
+        variants={amountPop}
         style={{
           font: '900 clamp(4.75rem, 24.6vw, 6rem)/0.9 var(--font-display)',
           color: 'var(--coral)',
@@ -46,9 +57,10 @@ export function Contribution() {
         }}
       >
         R${event.contribution}
-      </p>
+      </motion.p>
 
-      <p
+      <motion.p
+        variants={groupReveal}
         style={{
           font: '400 18px/1.5 var(--font-serif)',
           color: 'var(--ink)',
@@ -59,7 +71,7 @@ export function Contribution() {
         }}
       >
         {SUPPORT}
-      </p>
-    </section>
+      </motion.p>
+    </motion.section>
   );
 }

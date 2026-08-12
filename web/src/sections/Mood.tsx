@@ -1,4 +1,14 @@
+import { motion } from 'motion/react';
+
 import { SectionKicker } from '../components/ui';
+import { FloatingDisco, staggerGroup, stickerPop } from '../components/motion';
+import { usePrefersReducedMotion } from '../hooks/usePrefersReducedMotion';
+
+import heart from '../assets/stickers/heart.jpg';
+import smileyYellow from '../assets/stickers/smiley-yellow.jpg';
+import smileyPink from '../assets/stickers/smiley-pink.jpg';
+import larisDisco from '../assets/laris/laris-disco.jpg';
+import sparkle from '../assets/decorative/sparkle.svg';
 
 /**
  * The Mood — section 5 of 13.
@@ -6,122 +16,153 @@ import { SectionKicker } from '../components/ui';
  * Visual reference:
  *   reference/design-system/templates/invitation-experience/TheMood.dc.html
  *
- * Two horizontal bands of varied-proportion cutouts on Deep Ink, closed by the
- * disco journey's second chrome touchpoint. CP4 builds the static composition
- * only: the bands are laid out as marquee tracks but nothing moves yet.
+ * No longer a photo gallery: the section is a sticker composition on Deep Ink,
+ * built from the project's own visual references. Varied sizes and tilts keep
+ * it reading as a scattered sheet of stickers rather than a grid of tiles.
  *
- * CP7 adds MOTION-SPEC G (26s linear loop, the two rows travelling in opposite
- * directions) by rendering each tile set twice inside its track and animating
- * the track by -50%. The track element already exists for exactly that, so the
- * change is an animation property plus a duplicated map — no restructuring.
+ * Two shape strategies, forced by the source files (all JPEG, none with an
+ * alpha channel):
+ *  - `disc` — the heart and smiley artworks sit on white/off-white. Clipped to
+ *    a circle, that background becomes the sticker's own die-cut edge, which
+ *    is exactly how the two smileys are already drawn.
+ *  - `blend` — the Larissa cutout sits on pure black. `mix-blend-mode: lighten`
+ *    drops that black out against the ink field so she floats free, with no
+ *    visible plate behind her.
+ *
+ * The stickers pop in on scroll and then hold. Exactly two of the twelve keep
+ * a very slow ambient drift — enough to stop the wall reading as a flat
+ * print, far short of everything floating at once. The old photo marquee is
+ * gone for good; this is a pinned sheet, not a conveyor.
  */
 
-interface MoodTile {
+interface MoodSticker {
   id: string;
-  /** Real photo, once curation lands (CONTENT_PENDING §13). */
-  src?: string;
-  /** Required whenever `src` is set; placeholders carry no information. */
-  alt?: string;
-  surface: string;
-  aspectRatio: string;
-  /** Flex basis, from the reference's 160/220px rhythm. */
-  width: number;
+  src: string;
+  /** Rendered height in px; disc stickers are square. */
+  size: number;
+  rotate: number;
+  shape: 'disc' | 'free';
+  /** Drops a pure-black source background against the ink field. */
+  blend?: boolean;
+  /** Only two stickers carry this — see the ambient note above. */
+  ambient?: boolean;
 }
 
-/**
- * CONTENT PENDING: no Mood photography has been curated yet, so every tile is
- * a placeholder. These are not loading states — they are flat design-system
- * colour fields holding the exact frame each photo will occupy. Chrome tones
- * carry most of them so the band reads as a contact sheet rather than a
- * rainbow, with brand colour used as punctuation.
- *
- * Dropping in a real photo means adding `src` and `alt` to an entry; the tile
- * geometry does not change. The Hero cutout is deliberately not reused here —
- * repeating it this soon would weaken both appearances.
- */
-const ROW_A: readonly MoodTile[] = [
-  { id: 'a1', surface: 'var(--pool-blue)', aspectRatio: '4 / 5', width: 160 },
-  { id: 'a2', surface: 'var(--chrome-2)', aspectRatio: '3 / 2', width: 220 },
-  { id: 'a3', surface: 'var(--coral)', aspectRatio: '4 / 5', width: 160 },
-  { id: 'a4', surface: 'var(--chrome-3)', aspectRatio: '3 / 2', width: 220 },
-  { id: 'a5', surface: 'var(--soft-pink)', aspectRatio: '4 / 5', width: 160 },
-  { id: 'a6', surface: 'var(--chrome-2)', aspectRatio: '3 / 2', width: 220 },
+const ROW_A: readonly MoodSticker[] = [
+  { id: 'a1', src: heart, size: 132, rotate: -6, shape: 'disc' },
+  { id: 'a2', src: sparkle, size: 48, rotate: 0, shape: 'free' },
+  { id: 'a3', src: larisDisco, size: 190, rotate: 3, shape: 'free', blend: true, ambient: true },
+  { id: 'a4', src: smileyYellow, size: 116, rotate: 9, shape: 'disc' },
+  { id: 'a5', src: sparkle, size: 36, rotate: 0, shape: 'free' },
+  { id: 'a6', src: smileyPink, size: 144, rotate: -4, shape: 'disc' },
 ];
 
-const ROW_B: readonly MoodTile[] = [
-  { id: 'b1', surface: 'var(--chrome-2)', aspectRatio: '3 / 2', width: 220 },
-  { id: 'b2', surface: 'var(--summer-orange)', aspectRatio: '4 / 5', width: 160 },
-  { id: 'b3', surface: 'var(--chrome-3)', aspectRatio: '3 / 2', width: 220 },
-  { id: 'b4', surface: 'var(--bubblegum)', aspectRatio: '4 / 5', width: 160 },
-  { id: 'b5', surface: 'var(--chrome-2)', aspectRatio: '3 / 2', width: 220 },
-  { id: 'b6', surface: 'var(--sun-yellow)', aspectRatio: '4 / 5', width: 160 },
+const ROW_B: readonly MoodSticker[] = [
+  { id: 'b1', src: smileyPink, size: 120, rotate: 7, shape: 'disc' },
+  { id: 'b2', src: sparkle, size: 42, rotate: 0, shape: 'free' },
+  { id: 'b3', src: smileyYellow, size: 152, rotate: -8, shape: 'disc', ambient: true },
+  { id: 'b4', src: heart, size: 108, rotate: 5, shape: 'disc' },
+  { id: 'b5', src: sparkle, size: 54, rotate: 0, shape: 'free' },
+  { id: 'b6', src: smileyPink, size: 96, rotate: -10, shape: 'disc' },
 ];
 
-function MoodRow({ tiles, marginTop }: { tiles: readonly MoodTile[]; marginTop?: string }) {
+function Sticker({ sticker }: { sticker: MoodSticker }) {
+  const isDisc = sticker.shape === 'disc';
+  const reduced = usePrefersReducedMotion();
+  const drifts = sticker.ambient && !reduced;
+
   return (
-    <div style={{ marginTop }}>
-      {/* The track is the element CP7 animates. */}
-      <div
+    // Outer element owns the tilt, the pop and the blend. The blend has to be
+    // here and nowhere deeper: `rotate` opens a stacking context, and a blend
+    // applied inside it would be isolated from the section's ink backdrop.
+    <motion.div
+      variants={stickerPop}
+      style={{
+        flexShrink: 0,
+        rotate: sticker.rotate,
+        ...(sticker.blend ? { mixBlendMode: 'lighten' as const } : null),
+      }}
+    >
+      {/* Inner element carries the ambient drift, so it never fights the
+          scale/rotate the variant and the tilt already own. */}
+      <motion.div
+        animate={drifts ? { y: [-4, 4] } : undefined}
+        transition={
+          drifts
+            ? { duration: 8, repeat: Infinity, repeatType: 'mirror', ease: 'easeInOut' }
+            : undefined
+        }
         style={{
-          display: 'flex',
-          gap: '10px',
-          width: 'max-content',
-          // The reference leaves align-items at `stretch`, which silently
-          // overrides every declared aspect-ratio and flattens all tiles to
-          // one height. Centring honours the 4:5 / 3:2 the reference actually
-          // declares — the "proporções variadas" the brief asks for — and
-          // distributes the leftover ink evenly above and below.
-          alignItems: 'center',
+          height: `${sticker.size}px`,
+          ...(isDisc
+            ? { width: `${sticker.size}px`, borderRadius: '50%', overflow: 'hidden' }
+            : null),
         }}
       >
-        {tiles.map((tile) => (
-          <div
-            key={tile.id}
-            // Placeholders hold no information, so they stay out of the
-            // accessibility tree entirely. A real photo brings its own alt.
-            aria-hidden={tile.src ? undefined : true}
-            style={{
-              flex: `0 0 ${tile.width}px`,
-              aspectRatio: tile.aspectRatio,
-              overflow: 'hidden',
-              borderRadius: 'var(--radius-sharp)',
-              background: tile.surface,
-            }}
-          >
-            {tile.src && (
-              <img
-                src={tile.src}
-                alt={tile.alt ?? ''}
-                loading="lazy"
-                decoding="async"
-                style={{ width: '100%', height: '100%', objectFit: 'cover', display: 'block' }}
-              />
-            )}
-          </div>
+        <img
+          src={sticker.src}
+          alt=""
+          loading="lazy"
+          decoding="async"
+          style={{
+            height: '100%',
+            width: isDisc ? '100%' : 'auto',
+            display: 'block',
+            objectFit: isDisc ? 'cover' : 'contain',
+          }}
+        />
+      </motion.div>
+    </motion.div>
+  );
+}
+
+function MoodRow({ stickers, marginTop }: { stickers: readonly MoodSticker[]; marginTop?: string }) {
+  return (
+    // Decorative throughout: every sticker carries an empty alt, so the row
+    // adds nothing to the accessibility tree.
+    <div style={{ marginTop }} aria-hidden="true">
+      <motion.div
+        variants={staggerGroup(0.06)}
+        initial="hidden"
+        whileInView="visible"
+        viewport={{ once: true, amount: 0.15 }}
+        style={{
+          display: 'flex',
+          gap: 'var(--space-4)',
+          width: 'max-content',
+          alignItems: 'center',
+          padding: '0 var(--space-4)',
+        }}
+      >
+        {stickers.map((sticker) => (
+          <Sticker key={sticker.id} sticker={sticker} />
         ))}
-      </div>
+      </motion.div>
     </div>
   );
 }
 
 export function Mood() {
   return (
-    // overflow:hidden is load-bearing: the tracks are far wider than the
+    // overflow:hidden is load-bearing: the tracks run far wider than the
     // viewport and must never add to the page's horizontal scroll width.
     <section style={{ background: 'var(--ink)', padding: '56px 0', overflow: 'hidden' }}>
-      <div style={{ padding: '0 var(--space-5)', textAlign: 'center', marginBottom: 'var(--space-5)' }}>
+      <div
+        style={{ padding: '0 var(--space-5)', textAlign: 'center', marginBottom: 'var(--space-5)' }}
+      >
         <SectionKicker align="center" tone="inverse" role="heading" aria-level={2}>
           The Mood
         </SectionKicker>
       </div>
 
-      <MoodRow tiles={ROW_A} />
-      <MoodRow tiles={ROW_B} marginTop="12px" />
+      <MoodRow stickers={ROW_A} />
+      <MoodRow stickers={ROW_B} marginTop="var(--space-5)" />
 
-      {/* Disco journey, touchpoint 2 of 3 — and the visual bridge out of the
-          ink band into Rateio. Static in CP4. */}
+      {/* Disco journey, touchpoint 2 of 3. Sized up from 44px: at that size it
+          read as a grey dot lost in the ink, and the drift alone did not
+          rescue it. */}
       <div style={{ display: 'flex', justifyContent: 'center', marginTop: '28px' }}>
-        <div className="chrome-sphere" aria-hidden="true" style={{ width: '44px', height: '44px' }} />
+        <FloatingDisco size={56} duration={5.5} delay={0.4} />
       </div>
     </section>
   );

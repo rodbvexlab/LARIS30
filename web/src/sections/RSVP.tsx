@@ -1,7 +1,9 @@
 import { useEffect, useRef, useState } from 'react';
 import type { FormEvent } from 'react';
+import { AnimatePresence, motion } from 'motion/react';
 
 import { Button, Input, SectionKicker } from '../components/ui';
+import { ConfettiBurst, EASE_POP, VIEWPORT, groupReveal } from '../components/motion';
 import { event } from '../config/event';
 
 /**
@@ -96,15 +98,21 @@ export function RSVP() {
   }
 
   return (
-    <section
+    <motion.section
+      id="confirmacao"
+      variants={groupReveal}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VIEWPORT}
       style={{
         background: 'var(--warm-cream)',
         padding: '56px var(--space-5)',
         position: 'relative',
         overflow: 'hidden',
+        scrollMarginTop: 'var(--space-5)',
       }}
     >
-      <SectionKicker>RSVP</SectionKicker>
+      <SectionKicker>Confirmação</SectionKicker>
 
       <h2
         style={{
@@ -116,10 +124,16 @@ export function RSVP() {
         {TITLE}
       </h2>
 
+      <AnimatePresence mode="wait" initial={false}>
       {submitted ? (
-        // position:relative is the anchor CP7's ConfettiBurst mounts into
-        // (MOTION-SPEC J) — four dots, out and gone, no residue.
-        <div style={{ textAlign: 'center', padding: 'var(--space-5) 0', position: 'relative' }}>
+        <motion.div
+          key="success"
+          initial={{ opacity: 0, scale: 0.96 }}
+          animate={{ opacity: 1, scale: 1 }}
+          transition={{ duration: 0.35, ease: EASE_POP }}
+          style={{ textAlign: 'center', padding: 'var(--space-5) 0', position: 'relative' }}
+        >
+          <ConfettiBurst />
           <p
             ref={successRef}
             tabIndex={-1}
@@ -127,6 +141,7 @@ export function RSVP() {
               font: '900 34px var(--font-display)',
               color: 'var(--coral)',
               outline: 'none',
+              position: 'relative',
             }}
           >
             {SUCCESS_TITLE}
@@ -136,13 +151,17 @@ export function RSVP() {
               font: '500 14px var(--font-body)',
               color: 'var(--text-muted)',
               marginTop: 'var(--space-2)',
+              position: 'relative',
             }}
           >
             {SUCCESS_SUBTITLE}
           </p>
-        </div>
+        </motion.div>
       ) : (
-        <form
+        <motion.form
+          key="form"
+          exit={{ opacity: 0 }}
+          transition={{ duration: 0.2 }}
           noValidate
           onSubmit={handleSubmit}
           style={{ display: 'flex', flexDirection: 'column', gap: '14px' }}
@@ -189,8 +208,9 @@ export function RSVP() {
               {SUBMIT_LABEL}
             </Button>
           </div>
-        </form>
+        </motion.form>
       )}
-    </section>
+      </AnimatePresence>
+    </motion.section>
   );
 }

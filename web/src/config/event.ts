@@ -40,6 +40,11 @@ export interface Venue {
    */
   type: string;
   name: string | null;
+  /**
+   * Broad region of the venue — confirmed ahead of the exact address. Kept
+   * separate from `city`, which is a different (still unconfirmed) fact.
+   */
+  area: string | null;
   address: string | null;
   city: string | null;
   mapsUrl: string | null;
@@ -75,6 +80,8 @@ export interface Rsvp {
  */
 export interface Policies {
   companions: string | null;
+  /** What a guest should bring. */
+  bring: string | null;
   pool: string | null;
   parking: string | null;
   drinks: string | null;
@@ -108,7 +115,7 @@ export const event: EventConfig = {
   date: '2026-08-22',
 
   time: {
-    start: null,
+    start: '14:00',
     end: null,
   },
 
@@ -117,6 +124,7 @@ export const event: EventConfig = {
   venue: {
     type: 'Chácara',
     name: null,
+    area: 'Zona Sul',
     address: null,
     city: null,
     mapsUrl: null,
@@ -124,8 +132,10 @@ export const event: EventConfig = {
   },
 
   pix: {
-    key: null,
-    keyType: null,
+    // Stored exactly as the payment app expects it — digits only. Any
+    // formatting is a presentation concern and never changes this value.
+    key: '11952196901',
+    keyType: 'telefone',
     holder: null,
     deadline: null,
   },
@@ -133,13 +143,15 @@ export const event: EventConfig = {
   rsvp: {
     deadline: null,
     endpoint: null,
-    whatsapp: null,
+    whatsapp: '11952196901',
   },
 
   policies: {
-    companions: null,
-    pool: null,
-    parking: null,
-    drinks: null,
+    companions:
+      'Claro que não, né? Convidado não convida. Se precisar falar comigo, me chama no Whats kkk.',
+    bring: 'Sua linda presença e sua bebidinha favorita.',
+    pool: 'Sim! Piscina liberada — traga seu melhor kit de piscina.',
+    parking: 'Sim! Teremos estacionamento dentro da chácara.',
+    drinks: 'Open Cooler: traga sua bebida favorita. Também teremos refrigerante e suquinho!',
   },
 };

@@ -16,6 +16,9 @@
 - [x] Formato do local: **chácara**
 - [x] Rateio: **R$ 85,00 por pessoa**
 - [x] Modelo de bebidas: **BYOB + base coletiva**
+- [x] Chave PIX: **11952196901** (tipo: telefone)
+- [x] WhatsApp da Larissa: **11952196901**
+- [x] Região da chácara: **Zona Sul**
 - [x] Design System aprovado
 - [x] Arquitetura mobile aprovada
 - [x] Motion System aprovado
@@ -25,31 +28,35 @@
 
 ## 2. Horário
 
-- [ ] Horário de início
-- [ ] Horário previsto de encerramento
+- [x] Horário de início: **14:00** (`time.start`)
+- [ ] Horário previsto de encerramento (`time.end` segue nulo)
 
-Enquanto pendente:
-
-`EM BREVE`
+Como o encerramento não está confirmado, a interface comunica sempre uma
+abertura, nunca uma janela: **"A partir das 14h00"**. O valor armazenado
+continua sendo `'14:00'`; `14h00` é apenas apresentação.
 
 ---
 
 ## 3. Localização
 
+- [x] Região: **Zona Sul** (`venue.area`)
 - [ ] Nome da chácara, se houver
 - [ ] Endereço completo
-- [ ] Cidade / região final confirmada
+- [ ] Cidade confirmada (`venue.city` segue nulo — não inferir da região)
 - [ ] CEP
 - [ ] Link Google Maps
 - [ ] Link Waze
 - [ ] Ponto de referência, se necessário
 
-Enquanto pendente:
+Estado atual exibido:
 
 ```text
 CHÁCARA
+ZONA SUL
 ENDEREÇO EM BREVE
 ```
+
+Maps e Waze permanecem visualmente indisponíveis até que as URLs existam.
 
 Não inventar localização.
 
@@ -57,8 +64,8 @@ Não inventar localização.
 
 ## 4. PIX
 
-- [ ] Chave PIX
-- [ ] Tipo da chave
+- [x] Chave PIX: **11952196901**
+- [x] Tipo da chave: **telefone**
 - [ ] Nome do titular, se será exibido
 - [ ] Prazo final para pagamento
 - [ ] Texto definitivo de instrução do PIX
@@ -67,9 +74,9 @@ Valor confirmado:
 
 **R$ 85,00**
 
-Enquanto a chave estiver pendente:
-
-`CHAVE PIX — EM BREVE`
+A chave é armazenada só com dígitos (`11952196901`), que é o valor copiado
+para a área de transferência. A exibição formatada — `(11) 95219-6901` — é
+apenas apresentação e nunca substitui o valor armazenado.
 
 ---
 
@@ -81,10 +88,10 @@ Enquanto a chave estiver pendente:
 - [x] Restrição alimentar
 
 ### Ainda definir
+- [x] WhatsApp que receberá dúvidas / comprovantes: **11952196901**
 - [ ] Data limite para confirmação
 - [ ] Se o PIX será obrigatório para considerar presença confirmada
 - [ ] Se o comprovante será enviado por WhatsApp
-- [ ] WhatsApp que receberá dúvidas / comprovantes
 - [ ] Mensagem final após RSVP
 
 ### Integração
@@ -104,33 +111,32 @@ Ainda pendente:
 
 ## 6. Acompanhantes
 
-- [ ] Acompanhante é permitido?
-- [ ] Precisa informar nome?
-- [ ] Acompanhante também paga R$ 85?
+- [x] **Confirmado** (`policies.companions`): acompanhante não é permitido.
+      Dúvidas pelo WhatsApp da Larissa.
 - [ ] Crianças possuem alguma regra diferente?
-
-Até confirmação, o FAQ não deve afirmar nenhuma regra.
 
 ---
 
 ## 7. Piscina
 
-- [ ] Piscina estará liberada?
-- [ ] Horário de uso
-- [ ] Regras específicas, se houver
-- [ ] Necessidade de levar toalha
-- [ ] Necessidade de roupa de banho
-- [ ] Existem restrições do espaço?
+- [x] **Confirmado** (`policies.pool`): piscina liberada; o convidado traz o
+      próprio kit de piscina.
+- [ ] Horário de uso da piscina, se houver restrição
+- [ ] Restrições específicas do espaço (vidro na área da piscina etc.)
+
+---
+
+## 7b. O que levar
+
+- [x] **Confirmado** (`policies.bring`): presença + bebida favorita.
 
 ---
 
 ## 8. Estacionamento
 
-- [ ] Existe estacionamento no local?
+- [x] **Confirmado** (`policies.parking`): há estacionamento dentro da chácara.
 - [ ] Quantidade aproximada de vagas
-- [ ] É interno ou externo?
 - [ ] Existe orientação de acesso?
-- [ ] Existe custo?
 
 ---
 
@@ -148,10 +154,18 @@ Planejamento prevê base coletiva com:
 - [x] welcome drink
 - [x] cerveja base prevista no planejamento operacional
 
+### Confirmado (`policies.drinks`)
+- [x] Modelo: **Open Cooler** — o convidado traz sua bebida favorita
+- [x] **Refrigerante** garantido
+- [x] **Suco** garantido
+
+Welcome drink e cerveja **não** são mencionados na interface enquanto não
+forem confirmados.
+
 Ainda validar para publicação:
-- [ ] quais itens estarão efetivamente garantidos no dia
-- [ ] texto definitivo do bloco BYOB
-- [ ] orientação sobre cooler
+- [ ] texto definitivo do bloco BYOB da seção 08
+      (hoje ainda diz "Os demais detalhes sobre bebidas serão confirmados em
+      breve", o que passou a conflitar com a resposta do FAQ — ver §21)
 - [ ] restrição de vidro na área da piscina, se houver
 
 ---
@@ -175,7 +189,14 @@ Planejamento atual contempla:
 
 Antes da publicação final:
 - [ ] validar com Larissa quais itens permanecem confirmados
-- [ ] validar texto final da seção "What's Included"
+
+### "What's Included" — resolvido
+- [x] A seção deixou de listar inventário (água, gelo, refrigerante, frutas,
+      mimos) e passou a comunicar experiência:
+      **Churrasco · Música boa · Muita festa · Bons papos · Gente querida ·
+      Energia lá em cima**
+
+Isso remove a dependência de confirmar item a item para publicar a seção.
 
 ---
 
@@ -237,25 +258,23 @@ Não inventar infraestrutura.
 
 ---
 
-## 13. The Mood — Mapa de Assets
+## 13. The Mood — Decisão de conteúdo
 
-### Linha A
-- [ ] piscina real
-- [ ] disco / chrome
-- [ ] Larissa
-- [ ] detalhe da chácara
-- [ ] drink
-- [ ] vibe / amigos
+- [x] **Decidido: stickers / referências visuais do projeto, não fotografia.**
 
-### Linha B
-- [ ] look / dress code
-- [ ] chácara
-- [ ] óculos Y2K
-- [ ] drink
-- [ ] pool detail
-- [ ] sticker / artwork
+A seção não depende mais de curadoria fotográfica. Composição editorial de
+stickers sobre Deep Ink, montada a partir dos assets já existentes no projeto:
+heart, smileys, sticker da Larissa, sparkle e a chrome sphere (2º touchpoint do
+Disco Journey).
 
-Não é obrigatório usar 12 imagens distintas.
+Observação técnica: os arquivos de sticker são JPEG, sem canal alpha. Os de
+fundo claro são recortados em disco (o fundo vira a borda die-cut do próprio
+sticker); o da Larissa tem fundo preto puro e usa `mix-blend-mode: lighten`
+para sumir contra o ink.
+
+Ainda validar:
+- [ ] direitos de uso das imagens de referência para publicação
+- [ ] se algum sticker deve ser substituído por arte original
 
 ---
 
@@ -263,15 +282,11 @@ Não é obrigatório usar 12 imagens distintas.
 
 Direção confirmada:
 
-**COME COLORIDO.**
+**SUMMER VIBES** + orientação por círculos de cor
+(Coral, Bubblegum, Sun Yellow, Pool Blue, Summer Orange)
 
-**SUMMER & COLORFUL VIBES**
-
-Ainda selecionar:
-- [ ] look 1
-- [ ] look 2
-- [ ] look 3
-- [ ] look 4
+- [x] **Não depende mais de fotos.** A galeria de quatro looks foi removida.
+- [x] Seção simplificada: kicker + headline + paleta.
 
 ---
 
@@ -313,25 +328,16 @@ Ainda revisar:
 
 ---
 
-## 17. FAQ — Respostas Pendentes
+## 17. FAQ — Respostas
 
-### Posso levar acompanhante?
-- [ ] resposta
+Todas as seis respostas são lidas do `event.ts`; nenhuma permanece em "Em breve".
 
-### O que devo levar?
-- [ ] resposta
-
-### A piscina estará liberada?
-- [ ] resposta
-
-### Terá estacionamento?
-- [ ] resposta
-
-### Como funciona a bebida?
-- [ ] resposta final
-
-### Qual o horário?
-- [ ] resposta
+- [x] Posso levar acompanhante? → `policies.companions`
+- [x] O que devo levar? → `policies.bring`
+- [x] A piscina estará liberada? → `policies.pool`
+- [x] Terá estacionamento? → `policies.parking`
+- [x] Como funciona a bebida? → `policies.drinks`
+- [x] Qual o horário? → derivado de `time.start`
 
 ---
 
@@ -414,3 +420,23 @@ Se a informação não estiver confirmada neste documento ou no `event.ts`, o si
 2. ocultar a informação até confirmação.
 
 **Nunca inventar conteúdo para preencher lacunas.**
+
+---
+
+## 22. Inconsistências abertas — resolver antes do Content Freeze
+
+### BYOB (seção 08) × FAQ "Como funciona a bebida?"
+
+Com `policies.drinks` confirmado, as duas seções passaram a dizer coisas
+diferentes:
+
+| Onde | Texto atual |
+|---|---|
+| BYOB (seção 08) | "Os demais detalhes sobre bebidas serão confirmados em breve." |
+| FAQ | "Open Cooler: traga sua bebida favorita. Também teremos refrigerante e suquinho!" |
+
+A frase do BYOB deixou de ser verdadeira: os detalhes **foram** confirmados.
+Ela não foi alterada porque a redação atual é decisão oficial registrada; a
+troca precisa de aprovação.
+
+- [ ] definir o texto de apoio do BYOB à luz do Open Cooler

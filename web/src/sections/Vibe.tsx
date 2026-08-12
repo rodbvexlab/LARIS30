@@ -1,3 +1,7 @@
+import { motion } from 'motion/react';
+
+import { VIEWPORT, staggerGroup, staggerItem } from '../components/motion';
+
 /**
  * The Vibe — section 2 of 13.
  *
@@ -5,11 +9,11 @@
  *   reference/design-system/templates/invitation-experience/TheVibe.dc.html
  *
  * The emotional turn right after the Hero: a stack of words, no card, no
- * container — typography and colour blocks carry it. Static in CP3.
+ * container — typography and colour blocks carry it.
  *
- * The lines are a data array rather than six hand-written elements so CP7 can
- * add StaggerReveal (per-line delay 0/80/160/240/320/400ms, per MOTION-SPEC C)
- * by wrapping the map body, with no restructuring here.
+ * Each line lands on its own (MOTION-SPEC C) so the stack reads as a rhythm
+ * rather than a paragraph appearing. The section element is itself the stagger
+ * parent, which keeps the flex column intact — no wrapper div is introduced.
  */
 
 interface VibeLine {
@@ -36,7 +40,11 @@ const VIBE_LINES: readonly VibeLine[] = [
 
 export function Vibe() {
   return (
-    <section
+    <motion.section
+      variants={staggerGroup(0.08)}
+      initial="hidden"
+      whileInView="visible"
+      viewport={VIEWPORT}
       style={{
         background: 'var(--white)',
         padding: '64px 28px',
@@ -48,8 +56,9 @@ export function Vibe() {
       }}
     >
       {VIBE_LINES.map((line) => (
-        <p
+        <motion.p
           key={line.text}
+          variants={staggerItem}
           style={{
             font: line.font,
             color: line.color,
@@ -57,8 +66,8 @@ export function Vibe() {
           }}
         >
           {line.text}
-        </p>
+        </motion.p>
       ))}
-    </section>
+    </motion.section>
   );
 }
