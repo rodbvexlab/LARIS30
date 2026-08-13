@@ -23,6 +23,8 @@
 - [x] Arquitetura mobile aprovada
 - [x] Motion System aprovado
 - [x] Fotos reais da Larissa recebidas
+- [x] Fotos da chácara recebidas e disponíveis no projeto
+- [x] Galeria visual da chácara implementada entre PIX e Localização
 
 ---
 
@@ -228,20 +230,18 @@ Não recortar cabeça/cabelo de forma agressiva.
 
 ## 12. Fotos da Chácara
 
-Ainda pendentes.
+Fotos disponíveis em `web/src/assets/venue/` e galeria implementada.
 
-Fonte inicial prevista:
-prints do anúncio / Airbnb.
+Curadoria utilizada:
+- [x] piscina / deck
+- [x] vista geral da piscina e do jardim
+- [x] jardim / lago
+- [x] área de sinuca
+- [x] jardim
+- [x] acesso / estacionamento
 
-Capturar:
-- [ ] vista geral
-- [ ] piscina
-- [ ] churrasqueira / espaço gourmet
-- [ ] área externa
-- [ ] área social
-- [ ] fachada / entrada, se útil
-- [ ] estacionamento, se relevante
-- [ ] detalhes visualmente interessantes
+O endereço completo continua pendente e não deve ser inferido a partir das
+fotos. Ver §3.
 
 ### Tratamento posterior
 

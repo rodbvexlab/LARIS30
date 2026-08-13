@@ -10,6 +10,7 @@ import { Included } from './sections/Included';
 import { Byob } from './sections/Byob';
 import { RSVP } from './sections/RSVP';
 import { Pix } from './sections/Pix';
+import { VenueGallery } from './sections/VenueGallery';
 import { Location } from './sections/Location';
 import { FAQ } from './sections/FAQ';
 import { Closing } from './sections/Closing';
@@ -38,6 +39,7 @@ export default function App() {
       <Byob />
       <RSVP />
       <Pix />
+      <VenueGallery />
       <Location />
       <FAQ />
       <Closing />
