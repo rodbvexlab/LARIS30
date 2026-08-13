@@ -94,8 +94,10 @@ export const event: EventConfig = {
     address: 'Rua José Montenegro de Lima, 57',
     city: 'São Paulo - SP',
     postalCode: '04875-155',
-    mapsUrl: null,
-    wazeUrl: null,
+    mapsUrl:
+      'https://www.google.com/maps/search/?api=1&query=Ch%C3%A1cara+NIN+3+Estrelas%2C+Rua+Jos%C3%A9+Montenegro+de+Lima%2C+57%2C+S%C3%A3o+Paulo%2C+SP%2C+04875-155',
+    wazeUrl:
+      'https://www.waze.com/ul?q=Rua%20Jos%C3%A9%20Montenegro%20de%20Lima%2C%2057%2C%20S%C3%A3o%20Paulo%2C%20SP%2C%2004875-155&navigate=yes',
   },
 
   pix: {
