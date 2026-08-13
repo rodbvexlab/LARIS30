@@ -5,7 +5,7 @@ import { SectionKicker } from '../components/ui';
 import { VIEWPORT, groupReveal } from '../components/motion';
 import { event } from '../config/event';
 import { formatEventDatePlain, formatEventTime } from '../lib/date';
-import { PENDING_LABEL, resolvePending } from '../lib/pending';
+import { PENDING_LABEL } from '../lib/pending';
 
 /**
  * Party Info — section 3 of 13.
@@ -94,7 +94,6 @@ function InfoRow({ label, value, pending = false, prefix, detail, divider = true
 
 export function PartyInfo() {
   const startTime = event.time.start;
-  const address = resolvePending(event.venue.address);
 
   return (
     // Arrives as one block: animating each row separately would turn a
@@ -129,14 +128,10 @@ export function PartyInfo() {
         prefix={startTime ? 'A partir das' : undefined}
       />
 
-      {/*
-        The venue TYPE is confirmed ("Chácara"); its name, address and city are
-        not. Only the type is shown, so nothing is implied about which chácara.
-      */}
       <InfoRow
         label="Local"
         value={event.venue.type}
-        detail={address.pending ? 'Endereço em breve' : address.text}
+        detail={event.venue.address}
         divider={false}
       />
     </motion.section>

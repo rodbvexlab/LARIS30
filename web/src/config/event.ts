@@ -30,6 +30,7 @@ export interface Venue {
   area: string | null;
   address: string | null;
   city: string | null;
+  postalCode: string | null;
   mapsUrl: string | null;
   wazeUrl: string | null;
 }
@@ -88,10 +89,11 @@ export const event: EventConfig = {
 
   venue: {
     type: 'Chácara',
-    name: null,
+    name: 'Chácara NIN 3 Estrelas',
     area: 'Zona Sul',
-    address: null,
-    city: null,
+    address: 'Rua José Montenegro de Lima, 57',
+    city: 'São Paulo - SP',
+    postalCode: '04875-155',
     mapsUrl: null,
     wazeUrl: null,
   },

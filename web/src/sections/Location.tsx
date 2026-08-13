@@ -4,7 +4,6 @@ import { motion } from 'motion/react';
 import { SectionKicker } from '../components/ui';
 import { VIEWPORT, groupReveal } from '../components/motion';
 import { event } from '../config/event';
-import { resolvePending } from '../lib/pending';
 
 /**
  * Location — section 11 of 13.
@@ -12,12 +11,8 @@ import { resolvePending } from '../lib/pending';
  * Visual reference:
  *   reference/design-system/templates/invitation-experience/LocationSection.dc.html
  *
- * Every state is derived from `event.venue`, so the section upgrades itself as
- * fields get confirmed: the address line resolves, and each action becomes a
- * real link the moment its URL exists.
- *
- * The reference also prints "São Paulo", but `venue.city` is not confirmed
- * (CONTENT_PENDING §3), so that line is omitted rather than guessed.
+ * Every value is derived from `event.venue`, and each action becomes a real
+ * link the moment its URL exists.
  */
 
 const ACTION_STYLE: CSSProperties = {
@@ -79,8 +74,6 @@ function VenueAction({
 }
 
 export function Location() {
-  const address = resolvePending(event.venue.address);
-
   return (
     // One group reveal, and nothing on the Maps/Waze actions: they are
     // unavailable, and motion on a dead control reads as a promise.
@@ -107,9 +100,7 @@ export function Location() {
         {event.venue.name ?? event.venue.type}
       </h2>
 
-      {/* Region is confirmed; the city is not, so whichever exists is shown
-          and neither is inferred from the other. */}
-      {(event.venue.area ?? event.venue.city) && (
+      {event.venue.address && (
         <p
           style={{
             fontFamily: 'var(--font-body)',
@@ -119,21 +110,23 @@ export function Location() {
             marginTop: 'var(--space-1)',
           }}
         >
-          {event.venue.area ?? event.venue.city}
+          {event.venue.address}
         </p>
       )}
 
-      <p
-        style={{
-          fontFamily: 'var(--font-body)',
-          fontSize: '13px',
-          fontWeight: 500,
-          color: 'var(--text-muted)',
-          marginTop: '6px',
-        }}
-      >
-        {address.pending ? 'Endereço em breve' : address.text}
-      </p>
+      {event.venue.city && event.venue.postalCode && (
+        <p
+          style={{
+            fontFamily: 'var(--font-body)',
+            fontSize: '13px',
+            fontWeight: 500,
+            color: 'var(--text-muted)',
+            marginTop: '6px',
+          }}
+        >
+          {event.venue.city} · CEP {event.venue.postalCode}
+        </p>
+      )}
 
       <div
         style={{
